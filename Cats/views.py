@@ -1,15 +1,12 @@
 import json
 
 import requests
-from django.contrib import messages
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.shortcuts import render
 from django.views import View
-from django.views.generic import TemplateView, FormView
-from rest_framework import viewsets, generics, views, status
+from django.views.generic import TemplateView
+from rest_framework import generics, views, status
 from rest_framework.response import Response
-from rest_framework.reverse import reverse
 
 from Cats.forms import AdoptForm, GiveForm, GuardianshipForm
 from Cats.models import Cats, FormForGuardianship, FormForAdopt, FormForGive
@@ -162,7 +159,7 @@ class GuardianshipAPIView(views.APIView):
         request.session.save()
         if serializer.is_valid():
             if request.user.is_authenticated:
-                serializer.validated_data['user'] = request.user
+                serializer.validated_data['user'] = request.user.pk
                 serializer.validated_data['session_key'] = None
             else:
                 serializer.validated_data['user'] = None

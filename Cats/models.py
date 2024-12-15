@@ -1,8 +1,6 @@
 from datetime import date as d
 from django.db import models
 
-from Users.models import User
-
 
 class Cats(models.Model):
     FEM = 'FEMALE'
@@ -65,7 +63,7 @@ class FormForGuardianship(models.Model):
     cat_name = models.ForeignKey(to=Cats, on_delete=models.SET_DEFAULT, default=None, verbose_name='Имя котика')
     amount_of_money = models.CharField(max_length=4, choices=AMOUNT_OF_MONEY, default='400', verbose_name='Сумма на опекунства')
     session_key = models.CharField(max_length=32, blank=True, null=True)
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, blank=True, null=True, related_name='MyUser')
+    user = models.PositiveIntegerField(blank=True, null=True)
     is_paid = models.BooleanField(default=False, verbose_name='Статус оплаты')
 
     class Meta:

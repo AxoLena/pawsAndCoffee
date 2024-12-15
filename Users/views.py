@@ -1,10 +1,11 @@
-from django.http import HttpResponse, HttpResponseRedirect
+import requests
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
-from rest_framework.generics import ListAPIView
+from rest_framework import viewsets
 
-from Users.forms import UserLoginForm, UserProfileForm, UserChangeProfileForm, UserRegForm
+from Users.forms import UserLoginForm, UserChangeProfileForm, UserRegForm, UserResetForm, UserSetPasswordForm
 from Users.serializers import UserProfileSerializer
 from Users.models import User
 
@@ -33,14 +34,45 @@ class UserLoginRegView(View):
         return HttpResponse(status=500)
 
 
+class UserResetPasswordView(View):
+    context = {
+        'title': 'Восстановаление пароля'
+    }
+
+    def get(self, request):
+        form = UserResetForm
+        self.context['form'] = form
+        return render(request, 'users/reset_password.html', context=self.context)
+
+
+class UserResetNewPasswordView(View):
+    context = {
+        'title': 'Установка нового пароля'
+    }
+
+    def is_ajax(self):
+        return self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
+
+    def get(self, request, **kwargs):
+        user = request.user
+        form = UserSetPasswordForm(user=user)
+        self.context['form'] = form
+        self.context['uid'] = kwargs.get('uid')
+        self.context['token'] = kwargs.get('token')
+        return render(request, 'users/reset_new_password.html', context=self.context)
+
+
 class UserProfileView(View):
     context = {
         'title': 'Личный кабинет'
     }
 
-    def get(self, request):
-        form = UserProfileForm
-        self.context['form'] = form
+    def get(self, request, *args, **kwargs):
+        user_pk = request.user.pk
+        url = f'http://127.0.0.1:8000/user/api/auth/profile/{user_pk}/inf/'
+        response = requests.get(url)
+        user = response.json()
+        self.context['user'] = user
         return render(request, 'users/profile.html', context=self.context)
 
 
@@ -68,6 +100,8 @@ class UserLogoutView(View):
         return HttpResponse(status=500)
 
 
-class UserAccountsListView(ListAPIView):
-    queryset = User.objects.all()
+class UserAccountViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.kwargs['pk'])

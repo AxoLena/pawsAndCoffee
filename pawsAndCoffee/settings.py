@@ -166,10 +166,20 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': 'user/password/reset/confirm/{uid}/{token}',
     'SERIALIZERS': {
         'user_create': 'Users.serializers.UserRegSerializer',
+        'current_user': 'Users.serializers.UserProfileSerializer',
     },
 }
+
+#SMTP
+EMAIL_USE_TLS = True
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+
 
 #STRIPE
 STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY')

@@ -1,15 +1,22 @@
 from django.urls import path, re_path, include
+from rest_framework import routers
 
-from Users.views import UserProfileView, UserChangeProfileView, UserLoginRegView, UserAccountsListView, UserLogoutView
+from Users.views import (UserProfileView, UserChangeProfileView, UserLoginRegView, UserAccountViewSet, UserLogoutView,
+                         UserResetPasswordView, UserResetNewPasswordView)
 
 app_name = 'users'
 
+router = routers.SimpleRouter()
+router.register(r'inf', UserAccountViewSet, basename='account')
+
 urlpatterns = [
     path('login/', UserLoginRegView.as_view(), name='page_login'),
+    path('email/reset/', UserResetPasswordView.as_view(), name='reset_password'),
+    path('password/reset/confirm/<str:uid>/<str:token>/', UserResetNewPasswordView.as_view(), name='new_password'),
     path('profile/', UserProfileView.as_view(), name='profile'),
     path('profile/change/', UserChangeProfileView.as_view(), name='change_profile'),
     path('logout/', UserLogoutView.as_view(), name='logout_delToken'),
-    path('api/auth/users/inf/', UserAccountsListView.as_view()),
+    path('api/auth/profile/<int:pk>/', include(router.urls)),
     path('api/auth/', include('djoser.urls')),
     re_path(r'^api/auth/', include('djoser.urls.authtoken')),
 ]

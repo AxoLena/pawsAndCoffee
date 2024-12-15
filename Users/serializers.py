@@ -50,6 +50,24 @@ class UserRegSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    phone = serializers.CharField(validators=[phone_validate])
+    birthday = serializers.DateField(validators=[birthday_validate], required=False, default=None, allow_null=True)
+
     class Meta:
         model = User
-        fields = '__all__'
+        fields = ['username', 'email', 'phone', 'birthday', 'coins', 'booking', 'guardianship', 'id']
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if User.objects.filter(phone=attrs['phone']) and not (user.phone == attrs['phone']):
+            raise serializers.ValidationError({'phone': 'Пользователь с таким телефон уже существует'})
+        return attrs
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.username = validated_data.get('username', instance.username)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.birthday = validated_data.get('birthday', instance.birthday)
+        instance.save()
+        return instance
+

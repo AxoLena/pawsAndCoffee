@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
 
 from Booking.models import Booking
+from Cats.models import FormForGuardianship
 
 
 class CustomUserManager(BaseUserManager):
@@ -88,6 +89,7 @@ class User(AbstractUser, PermissionsMixin):
     coins = models.PositiveIntegerField(verbose_name='Мяукоины', default=0)
     booking = models.ForeignKey(to=Booking, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Бронирование')
     birthday = models.DateField(blank=True, null=True, verbose_name='дата рождения')
+    guardianship = models.ForeignKey(related_name='inf_guardianship', to=FormForGuardianship, on_delete=models.CASCADE, blank=True, null=True, verbose_name='информация о подписке')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)

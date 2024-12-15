@@ -12,6 +12,7 @@ from yookassa import Configuration, Payment
 
 from django.conf import settings
 
+from Users.models import User
 from Cats.models import FormForGuardianship
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -33,11 +34,12 @@ class PaymentForGuardianshipView(View):
             return user['post'][-1]
 
     def get(self, request):
-        guardian = self.get_guardian()
+        guardian_pk = self.get_guardian()
+        guardian = User.objects.get(pk=guardian_pk)
         session_key = request.session.session_key
         if guardian['session_key'] == session_key:
             return render(request, 'payment/payment.html', context=self.context)
-        elif guardian['user'] == request.user:
+        elif guardian_pk['user'] == request.user.pk:
             return render(request, 'payment/payment.html', context=self.context)
         else:
             messages.warning(self.request, 'На сервере произошла ошибка!\n Введите данные заново')
@@ -48,7 +50,8 @@ class PaymentForGuardianshipView(View):
 
     def post(self, request):
         payment_type = request.POST.get('stripe', 'yookassa')
-        guardian = self.get_guardian()
+        guardian_pk = self.get_guardian()
+        guardian = User.objects.get(pk=guardian_pk)
         try:
             match payment_type:
                 case 'stripe':
