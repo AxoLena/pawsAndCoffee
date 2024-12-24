@@ -1,6 +1,6 @@
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include, re_path
+from django.urls import path, include
 
 from pawsAndCoffee import settings
 
@@ -14,6 +14,7 @@ urlpatterns = [
     path('cats/', include('Cats.urls', namespace='cats')),
     path('calendar/', include('Booking.urls', namespace='booking')),
     path('payment/', include('Payment.urls', namespace='payment')),
+    path('bonus/', include('Bonuses.urls', namespace='bonuses'))
 ]
 
 if settings.DEBUG:

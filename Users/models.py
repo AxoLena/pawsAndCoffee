@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
 
 from Booking.models import Booking
+from Bonuses.models import Coin
 from Cats.models import FormForGuardianship
 
 
@@ -86,7 +87,7 @@ class User(AbstractUser, PermissionsMixin):
 
     phone = models.CharField(unique=True, verbose_name='номер телефона')
     email = models.EmailField(max_length=254, unique=True, verbose_name='Эл. почта')
-    coins = models.PositiveIntegerField(verbose_name='Мяукоины', default=0)
+    coins = models.ForeignKey(to=Coin, on_delete=models.CASCADE, verbose_name='Мяукоины')
     booking = models.ForeignKey(to=Booking, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Бронирование')
     birthday = models.DateField(blank=True, null=True, verbose_name='дата рождения')
     guardianship = models.ForeignKey(related_name='inf_guardianship', to=FormForGuardianship, on_delete=models.CASCADE, blank=True, null=True, verbose_name='информация о подписке')
