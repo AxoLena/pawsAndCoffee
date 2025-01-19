@@ -87,10 +87,11 @@ class User(AbstractUser, PermissionsMixin):
 
     phone = models.CharField(unique=True, verbose_name='номер телефона')
     email = models.EmailField(max_length=254, unique=True, verbose_name='Эл. почта')
-    coins = models.ForeignKey(to=Coin, on_delete=models.CASCADE, verbose_name='Мяукоины')
+    coins = models.OneToOneField(to=Coin, on_delete=models.CASCADE, verbose_name='Мяукоины', default=None)
     booking = models.ForeignKey(to=Booking, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Бронирование')
     birthday = models.DateField(blank=True, null=True, verbose_name='дата рождения')
     guardianship = models.ForeignKey(related_name='inf_guardianship', to=FormForGuardianship, on_delete=models.CASCADE, blank=True, null=True, verbose_name='информация о подписке')
+    session_key = models.CharField(max_length=32, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -105,6 +106,10 @@ class User(AbstractUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
+
+    def save(self, *args, **kwargs):
+        self.coins, created = Coin.objects.get_or_create(id=self.id)
+        super(User, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.username}'

@@ -70,4 +70,3 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.birthday = validated_data.get('birthday', instance.birthday)
         instance.save()
         return instance
-

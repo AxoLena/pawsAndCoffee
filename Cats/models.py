@@ -61,9 +61,9 @@ class FormForGuardianship(models.Model):
     email = models.EmailField(max_length=254, verbose_name='Адресс эл. почты')
     social = models.URLField(blank=True, null=True, verbose_name='Ссылка на соц. сети')
     cat_name = models.ForeignKey(to=Cats, on_delete=models.SET_DEFAULT, default=None, verbose_name='Имя котика')
-    amount_of_money = models.CharField(max_length=4, choices=AMOUNT_OF_MONEY, default='400', verbose_name='Сумма на опекунства')
+    amount_of_money = models.CharField(max_length=4, choices=AMOUNT_OF_MONEY, default='400', verbose_name='Сумма на опекунство')
     session_key = models.CharField(max_length=32, blank=True, null=True)
-    user = models.PositiveIntegerField(blank=True, null=True)
+    user_pk = models.PositiveIntegerField(blank=True, null=True)
     is_paid = models.BooleanField(default=False, verbose_name='Статус оплаты')
 
     class Meta:

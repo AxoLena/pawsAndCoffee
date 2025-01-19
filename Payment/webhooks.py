@@ -8,6 +8,7 @@ from yookassa import Webhook, Configuration, Payment
 from yookassa.domain.common import SecurityHelper
 from yookassa.domain.notification import WebhookNotificationFactory, WebhookNotificationEventType
 
+from Booking.models import Booking, Schedule
 from Cats.models import FormForGuardianship
 
 
@@ -36,12 +37,25 @@ def stripe_webhook(request):
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
         if session.mode == 'payment' and session.payment_status == 'paid':
-            try:
-                guardian_id = session.client_reference_id
-            except FormForGuardianship.DoesNotExist:
-                return HttpResponse(status=404)
-            guardian = FormForGuardianship.objects.get(id=guardian_id)
-            guardian.update(is_paid=True)
+            if session.extra_param == 'guardian':
+                try:
+                    guardian_id = session.client_reference_id
+                except FormForGuardianship.DoesNotExist:
+                    return HttpResponse(status=404)
+                guardian = FormForGuardianship.objects.get(id=guardian_id)
+                guardian.update(is_paid=True)
+            else:
+                try:
+                    user_id = session.client_reference_id
+                except Booking.DoesNotExist:
+                    return HttpResponse(status=404)
+                user = Booking.objects.get(id=user_id)
+                user.update(is_paid=True)
+
+                number_of_places = Schedule.objects.get(date=user['date'], time=user['time'])
+                number_of_places.quantity -= user['quantity']
+                number_of_places.save()
+
     return HttpResponse(status=200)
 
 

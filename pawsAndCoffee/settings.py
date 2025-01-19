@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'Main',
     'Cats',
     'Payment',
+    'Bonuses',
 
     'rest_framework',
     'rest_framework.authtoken',

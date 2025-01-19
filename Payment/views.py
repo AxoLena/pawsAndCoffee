@@ -12,6 +12,7 @@ from yookassa import Configuration, Payment
 
 from django.conf import settings
 
+from Booking.models import Booking, Schedule
 from Users.models import User
 from Cats.models import FormForGuardianship
 
@@ -37,9 +38,9 @@ class PaymentForGuardianshipView(View):
         guardian_pk = self.get_guardian()
         guardian = User.objects.get(pk=guardian_pk)
         session_key = request.session.session_key
-        if guardian['session_key'] == session_key:
+        if guardian.session_key == session_key:
             return render(request, 'payment/payment.html', context=self.context)
-        elif guardian_pk['user'] == request.user.pk:
+        elif guardian_pk['user_pk'] == request.user.pk:
             return render(request, 'payment/payment.html', context=self.context)
         else:
             messages.warning(self.request, 'На сервере произошла ошибка!\n Введите данные заново')
@@ -50,8 +51,7 @@ class PaymentForGuardianshipView(View):
 
     def post(self, request):
         payment_type = request.POST.get('stripe', 'yookassa')
-        guardian_pk = self.get_guardian()
-        guardian = User.objects.get(pk=guardian_pk)
+        guardian = self.get_guardian()
         try:
             match payment_type:
                 case 'stripe':
@@ -94,6 +94,7 @@ class PaymentForGuardianshipView(View):
                         'capture': True,
                         'test': True,
                         'description': description,
+                        'extra_param': 'guardian',
                     }, idempotence_key)
 
                     confirmation_url = payment.confirmation.confirmation_url
@@ -102,6 +103,90 @@ class PaymentForGuardianshipView(View):
         except ValueError:
             pk = guardian['id']
             instance = FormForGuardianship.objects.get(pk=pk)
+            instance.delete()
+            return HttpResponse(status=404)
+
+
+class PaymentForBookingView(View):
+    context = {
+        'title': 'Способ оплаты',
+    }
+
+    def get_user(self):
+            url = 'http://127.0.0.1:8000/calendar/api/booking/'
+            response = requests.get(url)
+            user = response.json()
+            return user['posts'][-1]
+
+    def get(self, request):
+        user_pk = self.get_user()
+        user = User.objects.get(pk=user_pk['user_pk'])
+        session_key = request.session.session_key
+        if user.session_key == session_key:
+            return render(request, 'payment/payment.html', context=self.context)
+        elif user_pk['user'] == request.user.pk:
+            return render(request, 'payment/payment.html', context=self.context)
+        else:
+            messages.warning(self.request, 'На сервере произошла ошибка!\n')
+            pk = user_pk['id']
+            instance = Booking.objects.get(pk=pk)
+            instance.delete()
+            return redirect(request, reverse('booking:schedule'))
+
+    def post(self, request):
+        payment_type = request.POST.get('stripe', 'yookassa')
+        user = self.get_user()
+        try:
+            match payment_type:
+                case 'stripe':
+                    c = CurrencyConverter()
+                    session_data = {
+                        'mode': 'payment',
+                        'success_url': request.build_absolute_uri(reverse('payment:success')),
+                        'cancel_url': request.build_absolute_uri(reverse('payment:failed')),
+                        'line_items': []
+                    }
+
+                    session_data['line_items'].append({
+                        'price_data': {
+                            'unit_amount': int(c.convert(float(user['cost']), 'RUB', 'USD') * 100),
+                            'currency': 'usd',
+                            'product_data': {
+                                'name': f'Бронь на {user['date']}, {user['time']}'
+                            }
+                        },
+                        'quantity': user['quantity']
+                    })
+
+                    session_data['client_reference_id'] = user['id']
+                    session = stripe.checkout.Session.create(**session_data)
+                    return redirect(session.url, code=303)
+
+                case 'yookassa':
+                    idempotence_key = uuid.uuid4()
+                    currency = 'RUB'
+                    description = f'Бронь на {user['date']}, {user['time']}'
+                    payment = Payment.create({
+                        'amount': {
+                            'value': user['cost'],
+                            'currency': currency
+                        },
+                        'confirmation': {
+                            'type': 'redirect',
+                            'return_url': request.build_absolute_uri(reverse('payment:success')),
+                        },
+                        'capture': True,
+                        'test': True,
+                        'description': description,
+                        'extra_param': 'booking',
+                    }, idempotence_key)
+
+                    confirmation_url = payment.confirmation.confirmation_url
+                    return redirect(confirmation_url)
+
+        except ValueError:
+            pk = user['id']
+            instance = Booking.objects.get(pk=pk)
             instance.delete()
             return HttpResponse(status=404)
 

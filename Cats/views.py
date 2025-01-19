@@ -159,10 +159,10 @@ class GuardianshipAPIView(views.APIView):
         request.session.save()
         if serializer.is_valid():
             if request.user.is_authenticated:
-                serializer.validated_data['user'] = request.user.pk
+                serializer.validated_data['user_pk'] = request.user.pk
                 serializer.validated_data['session_key'] = None
             else:
-                serializer.validated_data['user'] = None
+                serializer.validated_data['user_pk'] = None
                 serializer.validated_data['session_key'] = request.session.session_key
             serializer.save()
             if self.is_ajax():
