@@ -11,7 +11,7 @@ class CatAdmin(admin.ModelAdmin):
 
 @admin.register(FormForGuardianship)
 class GuardianshipAdmin(admin.ModelAdmin):
-    list_display = ['name', 'phone', 'cat_name', 'amount_of_money']
+    list_display = ['name', 'phone', 'cat_name', 'plan']
 
 
 @admin.register(FormForGive)

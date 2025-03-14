@@ -10,6 +10,8 @@ from yookassa.domain.notification import WebhookNotificationFactory, WebhookNoti
 
 from Booking.models import Booking, Schedule
 from Cats.models import FormForGuardianship
+from Payment.models import CheckoutSessionStripe
+from Users.models import CustomUser
 
 
 def get_client_ip(request):
@@ -25,7 +27,6 @@ def get_client_ip(request):
 def stripe_webhook(request):
     payload = request.body
     sig_header = request.META['HTTP_STRIPE_SIGNATURE']
-    event = None
 
     try:
         event = stripe.Webhook.construct_event(payload, sig_header, settings.STRIPE_WEBHOOK_SECRET)
@@ -36,26 +37,46 @@ def stripe_webhook(request):
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-        if session.mode == 'payment' and session.payment_status == 'paid':
-            if session.extra_param == 'guardian':
-                try:
-                    guardian_id = session.client_reference_id
-                except FormForGuardianship.DoesNotExist:
-                    return HttpResponse(status=404)
-                guardian = FormForGuardianship.objects.get(id=guardian_id)
-                guardian.update(is_paid=True)
-            else:
-                try:
-                    user_id = session.client_reference_id
-                except Booking.DoesNotExist:
-                    return HttpResponse(status=404)
-                user = Booking.objects.get(id=user_id)
-                user.update(is_paid=True)
+        if session.payment_status == 'paid':
+            match session.mode:
+                case'payment':
+                    try:
+                        booking_id = session.client_reference_id
+                    except Booking.DoesNotExist:
+                        return HttpResponse(status=404)
+                    booking = Booking.objects.get(id=booking_id)
+                    booking.is_paid = True
+                    number_of_places = Schedule.objects.get(date=booking.date, time=booking.time)
+                    number_of_places.quantity -= booking.quantity
+                    number_of_places.save()
+                    if booking.user and not booking.coupon and booking.bonuses != 0:
+                        user = booking.user
+                        user.coins.increased(discount=10, payment_amount=booking.cost,
+                                             description=f'Бронь на {booking.data} {booking.time}')
+                        user.save()
+                    booking.save()
 
-                number_of_places = Schedule.objects.get(date=user['date'], time=user['time'])
-                number_of_places.quantity -= user['quantity']
-                number_of_places.save()
-
+                case 'subscription':
+                    try:
+                        guardian_id = session.client_reference_id
+                    except FormForGuardianship.DoesNotExist:
+                        return HttpResponse(status=404)
+                    guardian = FormForGuardianship.objects.get(id=guardian_id)
+                    guardian.is_paid = True
+                    checkout_session = CheckoutSessionStripe.objects.create(
+                        checkout_session_id=session.id,
+                        price_id=guardian.plan,
+                        subscription_id=session.subscription,
+                        customer_id=session.customer,
+                        is_completed=True
+                    )
+                    guardian.pay_session = checkout_session
+                    if guardian.user:
+                        user = guardian.user
+                        user.coins.increased(discount=10, payment_amount=guardian.plan.unit_amount,
+                                             description=f'Подписка на {guardian.plan.name}')
+                        user.save()
+                    guardian.save()
     return HttpResponse(status=200)
 
 
@@ -87,7 +108,26 @@ def yookassa_webhook(request):
 
         payment_info = Payment.find_one(some_data['paymentId'])
         if payment_info:
-            payment_status = payment_info.status
+            match payment_info.extra_param.type:
+                case 'guardian':
+                    guardian = FormForGuardianship.objects.get(id=payment_info.extra_param.id)
+                    guardian.is_paid = payment_info.status
+                    guardian.payment_method = payment_info.payment_method
+                    guardian.save()
+                    if guardian.user:
+                        user = guardian.user
+                        user.coins.increased(discount=10, payment_amount=user.plan.unit_amount,
+                                             description=f'Подписка на {user.plan.name}')
+                        user.save()
+                case 'booking':
+                    booking = Booking.objects.get(id=payment_info.extra_param.id)
+                    booking.is_paid = payment_info.status
+                    booking.save()
+                    if booking.user and not booking.coupon and booking.bonuses != 0:
+                        user = booking.user
+                        user.coins.increased(discount=10, payment_amount=booking.cost,
+                                             description=f'Бронь на {booking.date}, {booking.time}')
+                        user.save()
         else:
             return HttpResponse(status=400)
 

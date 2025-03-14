@@ -1,5 +1,6 @@
+import requests
 from django.views.generic import TemplateView
-from rest_framework import views, status
+from rest_framework import views, status, generics
 from rest_framework.response import Response
 from datetime import datetime
 
@@ -14,12 +15,20 @@ class ScheduleView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Онлайн-запись'
-        context['form'] = BookingForm
+        user = self.request.user
+        if user.is_authenticated:
+            data = {'name': user.username, 'phone': user.phone}
+            form = BookingForm(data)
+            context['form'] = form
+        else:
+            context['form'] = BookingForm
+        url = "http://localhost:8000/api/information/"
+        response = requests.get(url)
+        context['inf'] = response.json()
         return context
 
 
 class ScheduleDayAPIView(views.APIView):
-
     def get(self, request):
         day = request.GET['day']
         today = datetime.today()
@@ -30,7 +39,6 @@ class ScheduleDayAPIView(views.APIView):
 
 
 class ScheduleTimeAPIView(views.APIView):
-
     def get(self, request):
         day = request.GET['day']
         time = request.GET['time']
@@ -41,17 +49,20 @@ class ScheduleTimeAPIView(views.APIView):
         return Response(serializer.data)
 
 
-class BookingAPIView(views.APIView):
+class BookingAPIDelete(generics.DestroyAPIView):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
 
+
+class BookingAPIView(views.APIView):
     def post(self, request):
         serializer = BookingSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.validated_data['cost'] = 400
             if request.user.is_authenticated:
-                serializer.validated_data['user_pk'] = request.user.pk
+                serializer.validated_data['user'] = request.user
                 serializer.validated_data['session_key'] = None
             else:
-                serializer.validated_data['user_pk'] = None
+                serializer.validated_data['user'] = None
                 serializer.validated_data['session_key'] = request.session.session_key
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
@@ -60,4 +71,4 @@ class BookingAPIView(views.APIView):
 
     def get(self, request):
         booking = Booking.objects.all()
-        return Response({'posts': BookingSerializer(booking, many=True).data})
+        return Response(BookingSerializer(booking, many=True).data)

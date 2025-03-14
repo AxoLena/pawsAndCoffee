@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 
-from Users.models import User
+from Users.models import CustomUser
 
 
 def auth_token(get_response):
@@ -11,7 +11,7 @@ def auth_token(get_response):
             request.META['HTTP_AUTHORIZATION'] = f'Token {token}'
             url = reverse('users:logout_delToken')
             if request.path != url:
-                request.user = User.objects.get(auth_token=token)
+                request.user = CustomUser.objects.get(auth_token=token)
         else:
             request.user = AnonymousUser()
         return get_response(request)

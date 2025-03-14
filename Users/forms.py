@@ -2,7 +2,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, User
 from django import forms
 from django.core.exceptions import ValidationError
 
-from Users.models import User
+from Users.models import CustomUser
 
 
 def validate_password(pas, re_pas):
@@ -14,7 +14,7 @@ def validate_password(pas, re_pas):
 
 class UserRegForm(UserCreationForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'email', 'phone', 'birthday', 'password', 'password2']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control inpt', 'placeholder': 'Введите ваш логин'}),
@@ -30,7 +30,7 @@ class UserRegForm(UserCreationForm):
 
 class UserLoginForm(AuthenticationForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['email', 'password']
 
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control inpt', 'placeholder': 'Введите ваш адрес эл. почты'}))
@@ -39,7 +39,7 @@ class UserLoginForm(AuthenticationForm):
 
 class UserChangeProfileForm(UserChangeForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'email', 'phone', 'birthday', 'current_password', 'new_password', 're_new_password']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите новый логин'}),
@@ -58,7 +58,7 @@ class UserChangeProfileForm(UserChangeForm):
 
 class UserResetForm(PasswordResetForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['email']
 
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Введите адрес эл. почты'}))
@@ -66,7 +66,7 @@ class UserResetForm(PasswordResetForm):
 
 class UserSetPasswordForm(SetPasswordForm):
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['new_password', 're_new_password']
 
     new_password = forms.CharField(required=False, widget=forms.PasswordInput(attrs={'class': "form-control",

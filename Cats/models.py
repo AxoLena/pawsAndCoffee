@@ -1,6 +1,9 @@
 from datetime import date as d
 from django.db import models
 
+from Users.models import CustomUser
+from Payment.models import ProductStripe, PriceStripe, CheckoutSessionStripe
+
 
 class Cats(models.Model):
     FEM = 'FEMALE'
@@ -20,6 +23,12 @@ class Cats(models.Model):
         today = d.today()
         return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
 
+    def save(self, *args, **kwargs):
+        product = ProductStripe.objects.filter(name=self.name).exists()
+        if not product:
+            ProductStripe.objects.create(name=self.name, description=f'Подписка на поддержание котика {self.name}')
+        super(Cats, self).save(*args, **kwargs)
+
     def __str__(self):
         return f'Котик {self.name}'
 
@@ -34,7 +43,7 @@ class FormForAdopt(models.Model):
     phone = models.CharField(verbose_name='Номер телефона')
     email = models.EmailField(max_length=254, verbose_name='Адресс эл. почты')
     social = models.URLField(blank=True, null=True, verbose_name='Ссылка на соц. сети')
-    cat_name = models.ForeignKey(to=Cats, on_delete=models.SET_DEFAULT, default=None, verbose_name='Имя котика')
+    cat_name = models.ForeignKey(to=Cats, on_delete=models.CASCADE, verbose_name='Имя котика')
     why_this_cat = models.TextField(verbose_name='Причины взять котика')
     children = models.BooleanField(default=False, verbose_name='Есть дети?')
     has_pet = models.BooleanField(default=False, verbose_name='Есть другие животные?')
@@ -56,20 +65,38 @@ class FormForGuardianship(models.Model):
         ('1000', '1000'),
         ('1500', '1500'),
     ]
+    INTERVAL = [
+        ('month', 'Месяц'),
+        ('year', 'Год'),
+    ]
     name = models.CharField(verbose_name='Имя')
+    created_timestamp = models.DateTimeField(auto_now_add=True, verbose_name='дата создания заказа')
     phone = models.CharField(verbose_name='Номер телефона')
     email = models.EmailField(max_length=254, verbose_name='Адресс эл. почты')
     social = models.URLField(blank=True, null=True, verbose_name='Ссылка на соц. сети')
-    cat_name = models.ForeignKey(to=Cats, on_delete=models.SET_DEFAULT, default=None, verbose_name='Имя котика')
+    cat_name = models.ForeignKey(to=ProductStripe, on_delete=models.CASCADE, verbose_name='Имя котика')
+    plan = models.ForeignKey(to=PriceStripe, on_delete=models.CASCADE, verbose_name='План подписки', default=None)
     amount_of_money = models.CharField(max_length=4, choices=AMOUNT_OF_MONEY, default='400', verbose_name='Сумма на опекунство')
+    interval = models.CharField(max_length=11, choices=INTERVAL, default='month', verbose_name='Интервал')
     session_key = models.CharField(max_length=32, blank=True, null=True)
-    user_pk = models.PositiveIntegerField(blank=True, null=True)
+    user = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE, verbose_name='Пользователь', null=True, blank=True, related_name='guardianship')
     is_paid = models.BooleanField(default=False, verbose_name='Статус оплаты')
+    pay_session = models.ForeignKey(to=CheckoutSessionStripe, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    payment_method = models.CharField(null=True, blank=True)
 
     class Meta:
         db_table = 'Guardianship'
-        verbose_name = f" Анкета 'Оформить опекунство семью'"
-        verbose_name_plural = f" Анкета 'Оформить опекунство семью'"
+        verbose_name = f" Анкета 'Оформить опекунство'"
+        verbose_name_plural = f" Анкета 'Оформить опекунство'"
+
+    def save(self, *args, **kwargs):
+        plan = PriceStripe.objects.filter(unit_amount=self.amount_of_money, interval=self.interval, product=self.cat_name)
+        if plan:
+            self.plan = plan.first()
+        else:
+            self.plan = PriceStripe.objects.create(product=self.cat_name, name=f'Price for {self.cat_name.name}',
+                                                   unit_amount=self.amount_of_money, interval=self.interval)
+        super(FormForGuardianship, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'Имя котика: {self.cat_name}, кто оформил опекунство: {self.name}'

@@ -3,7 +3,10 @@ from datetime import date
 
 from rest_framework import serializers
 
-from Users.models import User
+from Users.models import CustomUser
+from Booking.serializers import BookingSerializer
+from Cats.serializers import GuardianshipSerializer
+from Bonuses.serializers import CoinSerializer
 
 
 def phone_validate(value):
@@ -28,38 +31,42 @@ class UserRegSerializer(serializers.ModelSerializer):
     birthday = serializers.DateField(validators=[birthday_validate], required=False, default=None)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'email', 'phone', 'birthday', 'password', 'password2']
 
     def validate(self, attrs):
         if attrs['password2'] != attrs['password']:
             raise serializers.ValidationError({'password2': 'Пароли не совпадают'})
-        if User.objects.filter(phone=attrs['phone']):
+        if CustomUser.objects.filter(phone=attrs['phone']):
             raise serializers.ValidationError({'phone': 'Пользователь с таким телефон уже существует'})
         return attrs
 
     def create(self, validated_data):
-        user = User.objects.create(
+        user = CustomUser(
             username=validated_data['username'],
             email=validated_data['email'],
             phone=validated_data['phone'],
             birthday=validated_data['birthday'],
-            password=validated_data['password']
         )
+        user.set_password(validated_data['password'])
+        user.save()
         return user
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(validators=[phone_validate])
     birthday = serializers.DateField(validators=[birthday_validate], required=False, default=None, allow_null=True)
+    booking = BookingSerializer(many=True)
+    guardianship = GuardianshipSerializer(many=True)
+    coins = CoinSerializer()
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'email', 'phone', 'birthday', 'coins', 'booking', 'guardianship', 'id']
 
     def validate(self, attrs):
         user = self.context['request'].user
-        if User.objects.filter(phone=attrs['phone']) and not (user.phone == attrs['phone']):
+        if CustomUser.objects.filter(phone=attrs['phone']) and not (user.phone == attrs['phone']):
             raise serializers.ValidationError({'phone': 'Пользователь с таким телефон уже существует'})
         return attrs
 

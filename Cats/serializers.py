@@ -15,16 +15,22 @@ def russian_validator(value):
 def phone_validate(value):
     if not value.isdigit():
         raise serializers.ValidationError('Номер телефона должен состоять только из цифр')
-    pattern = re.compile(r'^\d{11}$')
+    pattern = re.compile(r'^\d{12}$')
     if not pattern.match(value):
         raise serializers.ValidationError('Неверный формат')
 
 
 class CatsSerializer(serializers.ModelSerializer):
+    gender = serializers.CharField(source='get_gender_display')
+    cat_age = serializers.SerializerMethodField()
+
     class Meta:
         model = Cats
         fields = '__all__'
         depth = 1
+
+    def get_cat_age(self, obj):
+        return obj.cat_age()
 
 
 class AdoptSerializer(serializers.ModelSerializer):
@@ -89,10 +95,14 @@ class GiveSerializer(serializers.ModelSerializer):
 class GuardianshipSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(validators=[phone_validate])
     name = serializers.CharField(validators=[russian_validator])
+    user = serializers.CharField(source='user.id', default=None)
+    plan = serializers.CharField(required=False)
+    cat_name = serializers.CharField(source='cat_name.name')
 
     class Meta:
         model = FormForGuardianship
         fields = '__all__'
+        # depth = 1
 
     def create(self, validated_data):
         guardianship = FormForGuardianship.objects.create(
@@ -102,9 +112,9 @@ class GuardianshipSerializer(serializers.ModelSerializer):
             social=validated_data['social'],
             cat_name=validated_data['cat_name'],
             amount_of_money=validated_data['amount_of_money'],
+            interval=validated_data['interval'],
             user=validated_data['user'],
             session_key=validated_data['session_key']
-
         )
         return guardianship
 

@@ -2,13 +2,11 @@ from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.db import models
 
-from Booking.models import Booking
 from Bonuses.models import Coin
-from Cats.models import FormForGuardianship
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, phone, email, username, password, birthday=None):
+    def create_user(self, phone, email, username, password=None, birthday=None):
         if not phone:
             raise ValueError('User must have an phone')
         if not email:
@@ -30,7 +28,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, phone, email, username, password, birthday=None, **kwargs):
+    def create_superuser(self, phone, email, username, password=None, birthday=None, **kwargs):
         if not phone:
             raise ValueError('User must have an phone')
         if not email:
@@ -53,7 +51,7 @@ class CustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_staffuser(self, phone, email, username, password, birthday=None, **kwargs):
+    def create_staffuser(self, phone, email, username, password=None, birthday=None, **kwargs):
         if not phone:
             raise ValueError('User must have an phone')
         if not email:
@@ -77,7 +75,7 @@ class CustomUserManager(BaseUserManager):
         return user
 
 
-class User(AbstractUser, PermissionsMixin):
+class CustomUser(AbstractUser, PermissionsMixin):
     ADMIN = 'admin'
     STAFF = 'staff'
     STATUS = [
@@ -85,12 +83,11 @@ class User(AbstractUser, PermissionsMixin):
         (STAFF, 'Staff User'),
     ]
 
+    username = models.CharField(unique=False, verbose_name='Имя пользователя', max_length=30)
     phone = models.CharField(unique=True, verbose_name='номер телефона')
     email = models.EmailField(max_length=254, unique=True, verbose_name='Эл. почта')
     coins = models.OneToOneField(to=Coin, on_delete=models.CASCADE, verbose_name='Мяукоины', default=None)
-    booking = models.ForeignKey(to=Booking, on_delete=models.CASCADE, blank=True, null=True, verbose_name='Бронирование')
     birthday = models.DateField(blank=True, null=True, verbose_name='дата рождения')
-    guardianship = models.ForeignKey(related_name='inf_guardianship', to=FormForGuardianship, on_delete=models.CASCADE, blank=True, null=True, verbose_name='информация о подписке')
     session_key = models.CharField(max_length=32, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -109,7 +106,7 @@ class User(AbstractUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):
         self.coins, created = Coin.objects.get_or_create(id=self.id)
-        super(User, self).save(*args, **kwargs)
+        super(CustomUser, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.username}'

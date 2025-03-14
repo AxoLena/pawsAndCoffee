@@ -82,7 +82,12 @@ class AdoptView(View):
     }
 
     def get(self, request):
-        form = AdoptForm
+        user = request.user
+        if user.is_authenticated:
+            data = {'name': user.username, 'phone': user.phone, 'email': user.email}
+            form = AdoptForm(data)
+        else:
+            form = AdoptForm
         self.context['form'] = form
         return render(request, 'cats/adopt.html', context=self.context)
 
@@ -134,7 +139,12 @@ class GiveView(View):
     }
 
     def get(self, request):
-        form = GiveForm
+        user = request.user
+        if user.is_authenticated:
+            data = {'name': user.username, 'phone': user.phone, 'email': user.email}
+            form = GiveForm(data)
+        else:
+            form = GiveForm
         self.context['form'] = form
         return render(request, 'cats/give.html', context=self.context)
 
@@ -145,7 +155,12 @@ class GuardianshipView(View):
     }
 
     def get(self, request):
-        form = GuardianshipForm
+        user = request.user
+        if user.is_authenticated:
+            data = {'name': user.username, 'phone': user.phone, 'email': user.email}
+            form = GuardianshipForm(data)
+        else:
+            form = GuardianshipForm
         self.context['form'] = form
         return render(request, 'cats/guardianship.html', context=self.context)
 
@@ -159,10 +174,10 @@ class GuardianshipAPIView(views.APIView):
         request.session.save()
         if serializer.is_valid():
             if request.user.is_authenticated:
-                serializer.validated_data['user_pk'] = request.user.pk
+                serializer.validated_data['user'] = request.user
                 serializer.validated_data['session_key'] = None
             else:
-                serializer.validated_data['user_pk'] = None
+                serializer.validated_data['user'] = None
                 serializer.validated_data['session_key'] = request.session.session_key
             serializer.save()
             if self.is_ajax():
@@ -195,4 +210,4 @@ class GuardianshipAPIView(views.APIView):
 
     def get(self, request):
         guardianship = FormForGuardianship.objects.all()
-        return Response({'post': GuardianshipSerializer(guardianship, many=True).data})
+        return Response(GuardianshipSerializer(guardianship, many=True).data)

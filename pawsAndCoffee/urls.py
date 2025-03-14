@@ -14,7 +14,7 @@ urlpatterns = [
     path('cats/', include('Cats.urls', namespace='cats')),
     path('calendar/', include('Booking.urls', namespace='booking')),
     path('payment/', include('Payment.urls', namespace='payment')),
-    # path('bonus/', include('Bonuses.urls', namespace='bonuses'))
+    path('bonus/', include('Bonuses.urls', namespace='bonuses'))
 ]
 
 if settings.DEBUG:

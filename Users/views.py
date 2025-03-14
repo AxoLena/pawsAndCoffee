@@ -1,13 +1,16 @@
 import requests
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from rest_framework import viewsets
 
 from Users.forms import UserLoginForm, UserChangeProfileForm, UserRegForm, UserResetForm, UserSetPasswordForm
 from Users.serializers import UserProfileSerializer
-from Users.models import User
+from Users.models import CustomUser
+from Booking.models import Booking
+from Cats.models import FormForGuardianship
 
 
 class UserLoginRegView(View):
@@ -72,7 +75,11 @@ class UserProfileView(View):
         url = f'http://127.0.0.1:8000/user/api/auth/profile/{user_pk}/inf/'
         response = requests.get(url)
         user = response.json()
+        url = 'http://127.0.0.1:8000/bonus/api/coupon/list/'
+        response = requests.get(url)
+        coupons = response.json()
         self.context['user'] = user
+        self.context['coupons'] = coupons
         return render(request, 'users/profile.html', context=self.context)
 
 
@@ -86,6 +93,26 @@ class UserChangeProfileView(View):
         form = UserChangeProfileForm(instance=user)
         self.context['form'] = form
         return render(request, 'users/change_profile.html', context=self.context)
+
+
+class UserUpdateInfAboutPaymentsView(View):
+    def get(self, request):
+        if request.user.is_authenticated:
+            user = request.user
+            booking = Booking.objects.filter(phone=user.phone)
+            guardianship = FormForGuardianship.objects.filter(phone=user.phone)
+            if booking:
+                for data in booking:
+                    if data.is_paid:
+                        data.user = user
+            if guardianship:
+                for data in guardianship:
+                    if data.is_paid:
+                        data.user = user
+            return redirect(reverse('users:profile'))
+        else:
+            messages.warning(request, 'На сервере произошла ошибка!\n Попробуйте авторизоваться еще раз')
+            return redirect(reverse('users:page_login'))
 
 
 class UserLogoutView(View):
@@ -104,4 +131,4 @@ class UserAccountViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
 
     def get_queryset(self):
-        return User.objects.filter(id=self.kwargs['pk'])
+        return CustomUser.objects.filter(id=self.kwargs['pk'])

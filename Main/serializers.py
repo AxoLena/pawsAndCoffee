@@ -12,6 +12,7 @@ class AddressSerializer(serializers.ModelSerializer):
 
 class InfAboutCafeSerializer(serializers.ModelSerializer):
     address = AddressSerializer(read_only=True)
+    cost = serializers.DecimalField(max_digits=5, decimal_places=0)
 
     class Meta:
         model = InfAboutCafe

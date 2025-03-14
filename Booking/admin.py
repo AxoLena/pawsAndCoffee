@@ -2,15 +2,14 @@ import datetime
 from django.contrib import admin
 from django.http import HttpResponseRedirect
 from django.urls import re_path
-from rest_framework import status
 
-from Booking.models import Schedule
+from Booking.models import Schedule, Booking
 
 
 @admin.register(Schedule)
 class BookingInformationAdmin(admin.ModelAdmin):
     list_display = ['date', 'time', 'number_of_places']
-    change_list_template = "admin/model_change_list.html"
+    change_list_template = "admin/Booking_change_list.html"
 
     def get_urls(self):
         urls = super(BookingInformationAdmin, self).get_urls()
@@ -43,3 +42,8 @@ class BookingInformationAdmin(admin.ModelAdmin):
                     count += 1
         self.message_user(request, f"создано {count} новых записей")
         return HttpResponseRedirect("../")
+
+
+@admin.register(Booking)
+class BookingAdmin(admin.ModelAdmin):
+    list_display = ['date', 'time', 'user', 'session_key']

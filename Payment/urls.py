@@ -1,7 +1,8 @@
 from django.urls import path
 
-from Payment.webhooks import stripe_webhook
-from Payment.views import PaymentForGuardianshipView, PaymentForBookingView, PaymentAnswerSuccess, PaymentAnswerFailed
+from Payment.webhooks import stripe_webhook, yookassa_webhook
+from Payment.views import PaymentForGuardianshipView, PaymentForBookingView, PaymentAnswerSuccess, PaymentAnswerFailed, \
+    DeleteSubscriptionView
 
 app_name = 'payment'
 
@@ -10,5 +11,7 @@ urlpatterns = [
     path('booking/', PaymentForBookingView.as_view(), name='select-booking'),
     path('success/', PaymentAnswerSuccess.as_view(), name='success'),
     path('failed/', PaymentAnswerFailed.as_view(), name='failed'),
-    path('webhook-stripe/', stripe_webhook)
+    path('del-sub/', DeleteSubscriptionView.as_view()),
+    path('webhook-stripe/', stripe_webhook),
+    path('webhook-yookassa/', yookassa_webhook)
 ]

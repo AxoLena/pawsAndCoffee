@@ -20,7 +20,7 @@ class AdoptForm(forms.ModelForm):
             'why_this_cat': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Расскажите почему выбрали именно этого кота'}),
             'children': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
             'has_pet': forms.CheckboxInput(attrs={'class': 'form-check-input', 'name': 'has_pet'}),
-            'pets': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Расскаэите какие у вас есть еще животные'})
+            'pets': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Расскажите какие у вас есть еще животные'})
         }
 
 
@@ -52,12 +52,13 @@ class GuardianshipForm(forms.ModelForm):
 
     class Meta:
         model = FormForGuardianship
-        fields = ['name', 'phone', 'email', 'social', 'cat_name', 'amount_of_money']
+        fields = ['name', 'phone', 'email', 'social', 'cat_name', 'amount_of_money', 'interval']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите ваше имя'}),
             'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(000) 000-0000', 'id': 'id_phone'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Введите ваш адрес электронной почты'}),
             'social': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Оставьте здесь ссылку на вашу страницу'}),
             'cat_name': forms.Select(attrs={'class': "form-select"}),
-            'amount_of_money': forms.Select(attrs={'class': 'form-select'})
+            'amount_of_money': forms.Select(attrs={'class': 'form-select'}),
+            'interval': forms.Select(attrs={'class': 'form-select'})
         }
