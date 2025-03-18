@@ -1,5 +1,6 @@
 from rest_framework import generics, status, views
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from Bonuses.models import Coin, Coupon
 from Bonuses.serializers import CoinSerializer, CouponCompareSerializer, CouponSerializer
@@ -9,6 +10,7 @@ class CoinUpdateAPIView(generics.UpdateAPIView):
     queryset = Coin.objects.all()
     serializer_class = CoinSerializer
     lookup_field = 'pk'
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()

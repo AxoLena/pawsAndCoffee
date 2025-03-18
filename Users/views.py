@@ -1,5 +1,5 @@
-import requests
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -11,6 +11,8 @@ from Users.serializers import UserProfileSerializer
 from Users.models import CustomUser
 from Booking.models import Booking
 from Cats.models import FormForGuardianship
+from mixins.mixins import RequestsGETMixin, GetAuthToken
+from permissions.permissions import IsAdminOrAuthenticatedReadOnly
 
 
 class UserLoginRegView(View):
@@ -65,25 +67,21 @@ class UserResetNewPasswordView(View):
         return render(request, 'users/reset_new_password.html', context=self.context)
 
 
-class UserProfileView(View):
+class UserProfileView(LoginRequiredMixin, RequestsGETMixin, GetAuthToken, View):
     context = {
         'title': 'Личный кабинет'
     }
 
     def get(self, request, *args, **kwargs):
         user_pk = request.user.pk
-        url = f'http://127.0.0.1:8000/user/api/auth/profile/{user_pk}/inf/'
-        response = requests.get(url)
-        user = response.json()
-        url = 'http://127.0.0.1:8000/bonus/api/coupon/list/'
-        response = requests.get(url)
-        coupons = response.json()
+        user = self.get_dict(url=f'http://127.0.0.1:8000/user/api/auth/profile/{user_pk}/inf/', headers=self.get_auth_token(request))
+        coupons = self.get_dict(url='http://127.0.0.1:8000/bonus/api/coupon/list/')
         self.context['user'] = user
         self.context['coupons'] = coupons
         return render(request, 'users/profile.html', context=self.context)
 
 
-class UserChangeProfileView(View):
+class UserChangeProfileView(LoginRequiredMixin, View):
     context = {
         'title': 'Изменить профиль'
     }
@@ -129,6 +127,7 @@ class UserLogoutView(View):
 
 class UserAccountViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
+    permission_classes = [IsAdminOrAuthenticatedReadOnly]
 
     def get_queryset(self):
         return CustomUser.objects.filter(id=self.kwargs['pk'])

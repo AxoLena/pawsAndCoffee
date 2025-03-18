@@ -48,7 +48,7 @@ class BookingSerializer(serializers.ModelSerializer):
         bonuses = attrs['bonuses']
         if ((float(cost) * int(quantity)) - int(bonuses)) < 1:
             raise serializers.ValidationError({'coins': 'Сумма оплаты не должна быть меньше 1 рубля!'})
-        if coupon and bonuses != 0:
+        if coupon['code'] and bonuses != 0:
             raise serializers.ValidationError({
                 'code': 'Невозможно использовать промокод и бонусы вместе, необходимо использовать что-то одно!',
                 'coins': 'Невозможно использовать промокод и бонусы вместе, необходимо использовать что-то одно!',

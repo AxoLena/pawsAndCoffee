@@ -86,7 +86,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     username = models.CharField(unique=False, verbose_name='Имя пользователя', max_length=30)
     phone = models.CharField(unique=True, verbose_name='номер телефона')
     email = models.EmailField(max_length=254, unique=True, verbose_name='Эл. почта')
-    coins = models.OneToOneField(to=Coin, on_delete=models.CASCADE, verbose_name='Мяукоины', default=None)
+    coins = models.OneToOneField(to=Coin, on_delete=models.CASCADE, verbose_name='Мяукоины', null=True, blank=True)
     birthday = models.DateField(blank=True, null=True, verbose_name='дата рождения')
     session_key = models.CharField(max_length=32, blank=True, null=True)
     is_active = models.BooleanField(default=True)
@@ -103,10 +103,6 @@ class CustomUser(AbstractUser, PermissionsMixin):
 
     def has_module_perms(self, app_label):
         return True
-
-    def save(self, *args, **kwargs):
-        self.coins, created = Coin.objects.get_or_create(id=self.id)
-        super(CustomUser, self).save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.username}'

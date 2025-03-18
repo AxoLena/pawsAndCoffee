@@ -1,4 +1,3 @@
-import requests
 from django.views.generic import TemplateView
 from rest_framework import views, status, generics
 from rest_framework.response import Response
@@ -7,9 +6,10 @@ from datetime import datetime
 from Booking.models import Schedule, Booking
 from Booking.serializers import ScheduleSerializer, BookingSerializer
 from Booking.forms import BookingForm
+from mixins.mixins import RequestsGETMixin
 
 
-class ScheduleView(TemplateView):
+class ScheduleView(RequestsGETMixin, TemplateView):
     template_name = 'booking/schedule.html'
 
     def get_context_data(self, **kwargs):
@@ -22,9 +22,8 @@ class ScheduleView(TemplateView):
             context['form'] = form
         else:
             context['form'] = BookingForm
-        url = "http://localhost:8000/api/information/"
-        response = requests.get(url)
-        context['inf'] = response.json()
+        inf = self.get_dict(url="http://localhost:8000/api/information/")
+        context['inf'] = inf
         return context
 
 

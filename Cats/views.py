@@ -1,6 +1,5 @@
 import json
 
-import requests
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
@@ -11,6 +10,7 @@ from rest_framework.response import Response
 from Cats.forms import AdoptForm, GiveForm, GuardianshipForm
 from Cats.models import Cats, FormForGuardianship, FormForAdopt, FormForGive
 from Cats.serializers import CatsSerializer, GuardianshipSerializer, AdoptSerializer, GiveSerializer
+from mixins.mixins import RequestsGETMixin
 
 
 class CatsListAPIView(generics.ListAPIView):
@@ -18,7 +18,7 @@ class CatsListAPIView(generics.ListAPIView):
     serializer_class = CatsSerializer
 
 
-class OurCatsView(TemplateView):
+class OurCatsView(RequestsGETMixin, TemplateView):
     template_name = 'cats/our_cats.html'
 
     def get_context_data(self, **kwargs):
@@ -27,9 +27,7 @@ class OurCatsView(TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        url = "http://localhost:8000/cats/api/cats/"
-        response = requests.get(url)
-        cats = response.json()
+        cats = self.get_dict(url="http://localhost:8000/cats/api/cats/")
         context = self.get_context_data(**kwargs)
         context['cats'] = cats
         return self.render_to_response(context)

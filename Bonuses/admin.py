@@ -5,7 +5,7 @@ from Bonuses.models import Coin, Coupon, History
 
 @admin.register(Coin)
 class CoinAdmin(admin.ModelAdmin):
-    list_display = ['customuser', 'count']
+    list_display = ['customuser', 'id', 'count']
 
 
 @admin.register(Coupon)
