@@ -1,8 +1,10 @@
 from datetime import date as d
 from django.db import models
+from django.db.models import Q
 
 from Users.models import CustomUser
 from Payment.models import ProductStripe, PriceStripe, CheckoutSessionStripe
+from Cats.tasks import create_product
 
 
 class Cats(models.Model):
@@ -24,10 +26,17 @@ class Cats(models.Model):
         return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
 
     def save(self, *args, **kwargs):
-        product = ProductStripe.objects.filter(name=self.name).exists()
-        if not product:
-            ProductStripe.objects.create(name=self.name, description=f'Подписка на поддержание котика {self.name}')
+        name = self.name
+        product_is_exists = ProductStripe.objects.filter(name=name).exists()
+        if not product_is_exists:
+            description = f'Подписка на поддержание котика {name}'
+            product = ProductStripe.objects.create(name=name, description=description)
+            create_product.delay(name=name, description=description, id=product.id)
         super(Cats, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        product = ProductStripe.objects.get(name=self.name).delete()
+        super(Cats, self).delete(*args, **kwargs)
 
     def __str__(self):
         return f'Котик {self.name}'
@@ -79,7 +88,8 @@ class FormForGuardianship(models.Model):
     amount_of_money = models.CharField(max_length=4, choices=AMOUNT_OF_MONEY, default='400', verbose_name='Сумма на опекунство')
     interval = models.CharField(max_length=11, choices=INTERVAL, default='month', verbose_name='Интервал')
     session_key = models.CharField(max_length=32, blank=True, null=True)
-    user = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE, verbose_name='Пользователь', null=True, blank=True, related_name='guardianship')
+    user = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE, verbose_name='Пользователь',
+                             null=True, blank=True, related_name='guardianship', db_index=True)
     is_paid = models.BooleanField(default=False, verbose_name='Статус оплаты')
     pay_session = models.ForeignKey(to=CheckoutSessionStripe, on_delete=models.CASCADE, null=True, blank=True, default=None)
     payment_method = models.CharField(null=True, blank=True)
@@ -88,6 +98,10 @@ class FormForGuardianship(models.Model):
         db_table = 'Guardianship'
         verbose_name = f" Анкета 'Оформить опекунство'"
         verbose_name_plural = f" Анкета 'Оформить опекунство'"
+        indexes = [
+            models.Index(fields=['session_key'], condition=Q(session_key__isnull=False),
+                         name='guardian_session_key_not_null')
+        ]
 
     def save(self, *args, **kwargs):
         plan = PriceStripe.objects.filter(unit_amount=self.amount_of_money, interval=self.interval, product=self.cat_name)

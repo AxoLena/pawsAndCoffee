@@ -1,0 +1,22 @@
+{% load static %}
+
+<div class="container">
+    <h2 class="txt-headline text-center pt-5 fs-0">Наши котики <img src="{% static "/images/icons8-cat-footprint-64.png" %}"></h2>
+    <h2 class="text-center font-Bosk mb-2">
+        <a href="{% url 'cats:our_cats' %}" class="btn btn-primary btn-bg-color fs-5">Познакомиться поближе</a>
+    </h2>
+    <div class="my-5 text-center txt-content p-4" style="border: 5px dotted #b195765f">
+        {% for inf in information %}
+        <p>Наши котики — это настоящие звезды! Все они разные, маленькие личности со своими привычками и предпочтениями.
+                Все пушистики пришли к нам из разных уголков, но объединяет их одно — <span href="#" class="text-wavy">желание найти любящих хозяев и уютный дом.</span>
+                Некоторые из наших пушистых друзей были спасены из приютов, другие пришли к нам с улицы, а кто-то попал из добрых рук.
+            <p>Мы заботимся о здоровье наших пушистиков, поэтому они привиты и регулярно проходят ветеринарные осмотры.</p>
+            <p>Всего в нашем кафе <span class="txt-headline txt-select">{{ inf.count_of_cats }} котиков</span>,
+                с которыми вы можете познакомиться <span href="{% url 'cats:our_cats' %}" class="text-wavy">на нашем сайте</span>,
+                а еще лучше лично в нашем кафе!</p>
+        {% endfor %}
+    </div>
+    <div class="container mb-5">
+        {% include "main/include_slides_cats.html" %}
+    </div>
+</div>

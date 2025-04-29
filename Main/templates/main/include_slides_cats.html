@@ -1,0 +1,30 @@
+{% load static %}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        {% for cat in cats %}
+            <div id="carouselCats" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carouselCats" data-bs-slide-to="{{ cat.pk }}" class="active" aria-current="true" aria-label="Slide {{ cat.pk }}"></button>
+                </div>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{{ cat.image }}" class="d-block w-100" alt="{{ cat.name }}">
+                        <div class="carousel-caption d-none d-md-block" style="background-color: #00000073">
+                            <h5  style="color:#f3e9de">{{ cat.name }}</h5>
+                            <p style="color:#f3e9de">{{ cat.description|truncatechars:200 }}</p>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselCats" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Предыдущий</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselCats" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Следующий</span>
+                    </button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

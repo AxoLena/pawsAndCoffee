@@ -17,7 +17,7 @@ urlpatterns = [
     path('profile/', UserProfileView.as_view(), name='profile'),
     path('profile/change/', UserChangeProfileView.as_view(), name='change_profile'),
     path('logout/', UserLogoutView.as_view(), name='logout_delToken'),
-    path('api/auth/profile/<int:pk>/', include(router.urls)),
+    path('api/auth/profile/<int:pk>/', include(router.urls), name='inf_about_user_profile'),
     path('api/auth/', include('djoser.urls')),
     re_path(r'^api/auth/', include('djoser.urls.authtoken')),
 ]

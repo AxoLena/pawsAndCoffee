@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.db.models import Q
 
 from Users.models import CustomUser
 from Main.models import Address
@@ -22,7 +23,6 @@ class Schedule(models.Model):
     time = models.CharField(choices=TIME_CHOICE, max_length=5, verbose_name='Время посещения')
     address = models.ForeignKey(to=Address, on_delete=models.CASCADE, verbose_name='Адресс кафе', default=1)
     cost = models.DecimalField(default=400.00, max_digits=5, decimal_places=2, verbose_name="Стандартная стоимость посещения")
-    # duration_of_the_visit = models.TimeField(verbose_name="Продолжительность посещения", default=datetime.time(1, 00))
     number_of_places = models.PositiveSmallIntegerField(verbose_name="Количество мест", default=5)
 
     def __str__(self):
@@ -35,6 +35,9 @@ class Schedule(models.Model):
         db_table = 'Booking information'
         verbose_name = 'Информация о посещении'
         verbose_name_plural = 'Информация о посещених'
+        indexes = [
+            models.Index(fields=['date', 'time'])
+        ]
 
 
 class Booking(models.Model):
@@ -45,9 +48,11 @@ class Booking(models.Model):
     cost = models.DecimalField(default=200.00, max_digits=5, decimal_places=2, verbose_name="Cтоимость посещения")
     quantity = models.PositiveSmallIntegerField(default=1, verbose_name='Количество человек')
     session_key = models.CharField(max_length=32, blank=True, null=True)
-    user = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE, verbose_name='Пользователь', null=True, blank=True, related_name='booking')
+    user = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE, verbose_name='Пользователь',
+                             null=True, blank=True, related_name='booking', db_index=True)
     is_paid = models.BooleanField(default=False, verbose_name='Статус оплаты')
     phone = models.CharField(verbose_name='номер телефона')
+    email = models.EmailField(max_length=254, verbose_name='Эл. почта')
     name = models.CharField(verbose_name='Имя посетителя')
     bonuses = models.IntegerField(default=0, verbose_name='Количество списаных бонусов во время оплаты')
     coupon = models.ForeignKey(to=Coupon, on_delete=models.CASCADE, verbose_name='Куопн', null=True, blank=True)
@@ -64,3 +69,6 @@ class Booking(models.Model):
         db_table = 'Booking'
         verbose_name = 'Бронь'
         verbose_name_plural = 'Брони'
+        indexes = [
+            models.Index(fields=['session_key'], condition=Q(session_key__isnull=False), name='booking_session_key_not_null')
+        ]

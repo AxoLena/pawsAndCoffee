@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block add_css %}
+    <link rel="stylesheet" href="{% static "css/users_forms.css" %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <img src="{% static 'images/catjpg.jpg' %}" class="bg-profile">
+    <div class="my-container mt-3" style="width: 740px; left: 49%">
+        <h3 class="txt-headline text-center pt-5">Изменить данные профиля</h3>
+        <div class="row justify-content-center pt-4 txt-content">
+            <div class="col-md-7 gx-4">
+                <form action="{% url 'users:change_profile' %}" method="post" class="txt-content inpt pt-3" id="user_forms">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label mx-4" for="{{ form.username.id_for_lable }}">Логин<span class="txt-headline txt-select">*</span></label>
+                        {{ form.username }}
+                        <div class="invalid-feedback" style="text-transform: lowercase" id="id_username_feedback"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label mx-4" for="{{ form.phone.id_for_lable }}">Номер телефона<span class="txt-headline txt-select">*</span></label>
+                        {{ form.phone }}
+                        <div class="invalid-feedback" style="text-transform: lowercase" id="id_phone_feedback"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label mx-4" for="{{ form.email.id_for_lable }}">Эл. почта<span class="txt-headline txt-select">*</span></label>
+                        {{ form.email }}
+                        <div class="invalid-feedback" style="text-transform: lowercase" id="id_email_feedback"></div>
+                    </div>
+                    <div class="col-md-6 mt-2">
+                        <label class="form-label mx-4" for="{{ form.birthday.id_for_lable }}">Дата рождения</label>
+                        {{ form.birthday }}
+                        <div class="invalid-feedback" style="text-transform: lowercase" id="id_birthday_feedback"></div>
+                    </div>
+                    <div class="row justify-content-center pt-4 mt-3">
+                        <a id="BtnChangePassword" class="btn btn-dark btn-block col-5">Изменить пароль</a>
+                    </div>
+                    <div id="ChangePassword" class="col-md-12">
+                        <div class="d-flex justify-content-center">
+                            <div class="col-md-7 mb-1 mt-4 mx-4">
+                                <label class="form-label mx-4" for="{{ form.current_password.id_for_lable }}">Введите текущий пароль<span class="txt-headline txt-select">*</span></label>
+                                {{ form.current_password }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_current_password_feedback"></div>
+                            </div>
+                            <div class="col-md-8 mb-1 mt-4 mx-4">
+                                <label class="form-label mx-4" for="{{ form.new_password.id_for_lable }}">Введите новый пароль<span class="txt-headline txt-select">*</span></label>
+                                {{ form.new_password }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_new_password_feedback"></div>
+                                <label class="form-label mx-4 mt-3" for="{{ form.re_new_password.id_for_lable }}">Подтвердите новый пароль<span class="txt-headline txt-select">*</span></label>
+                                {{ form.re_new_password }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_re_new_password_feedback"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center pt-4" id="SaveChanges">
+                        <button type="submit" id="SaveChangesbtn" class="btn btn-dark btn-block col-5">Сохранить</button>
+                    </div>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block add_scripts %}
+    <script src="{% static "js/jq-ajax-users.js" %}"></script>
+{% endblock %}

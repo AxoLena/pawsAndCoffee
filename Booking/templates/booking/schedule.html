@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block add_css %}
+    <link rel="stylesheet" href="{% static "css/calendar.css" %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center txt-headline my-5">Запись на <span class="calendar-current-date"></span></h2>
+    {% for i in inf %}
+    <h3 class="text-center txt-content fs-5 pb-3">Стоимость <span class="fs-3 txt-headline txt-select">часа</span>
+        посещения для <span class="fs-3 txt-headline txt-select">одного</span> человека составляет
+        <span class="fs-3 txt-headline txt-select">{{ i.cost }}₽</span>!</h3>
+    {% endfor %}
+    <div class="container pt-4 pb-5">
+        <div class="row">
+            <div class="col-6 d-flex justify-content-center">
+                <div class="calendar-container py-2 my-3 px-auto">
+                    <div class="calendar-body">
+                        <ul class="calendar-weekdays">
+                            <li>Пн</li>
+                            <li>Вт</li>
+                            <li>Ср</li>
+                            <li>Чт</li>
+                            <li>Пт</li>
+                            <li>Сб</li>
+                            <li>Вс</li>
+                        </ul>
+                        <ul class="calendar-dates"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="time-container pt-1">
+                    <h3 class="txt-headline text-center mb-4 fs-3">Свободные о<span style="color: #fd708d">кошки</span>:</h3>
+                    <div class="time-body">
+                        <div class="container">
+                            <div id="no_selected">
+                                <div class="position-relative">
+                                    <h5 class="text-center pt-4 fs-3 txt-content z-2">Выберите нужную дату</h5>
+                                    <img class="underline_img z-1" src="{% static 'images/underline.png' %}" width="310px">
+                                    <img class="blue_arrow" src="{% static 'images/blue_arrow.png' %}" width="310px">
+                                </div>
+                            </div>
+                            <div class="row row-cols-2 mx-n1" id="choice_times">
+                            </div>
+                            {% include 'booking/modal_booking.html' %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block add_scripts %}
+    <script src="{% static "js/jq-calendar.js" %}"></script>
+{% endblock %}

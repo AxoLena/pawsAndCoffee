@@ -14,5 +14,5 @@ urlpatterns = [
     path('api/give/', GiveAPIView.as_view()),
     path('guardianship/', GuardianshipView.as_view(), name='guardianship'),
     path('api/guardianship/', GuardianshipAPIView.as_view()),
-    path('api/cats/', CatsListAPIView.as_view()),
+    path('api/cats/', CatsListAPIView.as_view(), name='cats-list'),
 ]

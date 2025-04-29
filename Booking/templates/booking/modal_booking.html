@@ -1,0 +1,81 @@
+{% load static %}
+
+{% block modal %}
+    <div class="modal fade" id="modal_booking" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form action="" method="post" class="txt-content" id="modal_booking_form">
+                    {% csrf_token %}
+                    <div class="modal-header my-modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                            <div id="modal_inf_booking"></div>
+                            <div class="mb-3 px-2" id="quantity_form">
+                                <label class="form-label mx-4" for="{{ form.quantity.id_for_lable }}">Количество человек<span class="txt-headline txt-select">*</span></label>
+                                {{ form.quantity }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_quantity_feedback"></div>
+                            </div>
+                            <div class="mb-3 px-2">
+                                <label class="form-label mx-4" for="{{ form.name.id_for_lable }}">Имя<span class="txt-headline txt-select">*</span></label>
+                                {{ form.name }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_name_feedback"></div>
+                            </div>
+                            <div class="mb-4 px-2">
+                                <label class="form-label mx-4" for="{{ form.phone.id_for_lable }}">Номер телефона<span class="txt-headline txt-select">*</span></label>
+                                {{ form.phone }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_phone_feedback"></div>
+                            </div>
+                            <div class="mb-5 px-2">
+                                <label class="form-label mx-4">Промокод</label>
+                                <input class="form-control" id="id_code" placeholder="PROMOROD" name="code">
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_code_feedback"></div>
+                            </div>
+                            <div class="mb-3 px-2">
+                                <div class="fs-min"><span class="txt-headline txt-select fs-min">*</span>Только для авторизованных пользователей!</div>
+                                <p>
+                                    <label class="form-label mx-2">Хотите оплатить бонусами?</label>
+                                    <input type="checkbox" class="form-check-input" id="pay_coins_submit"
+                                           {% if not request.user.is_authenticated%}
+                                                disabled="True"
+                                           {% endif %}>
+                                </p>
+                            </div>
+                            <div class="pay_coins mb-4 px-2" id="{% if request.user.is_authenticated %}{{ request.user.pk }}_{{request.user.coins.pk}}{% endif %}" >
+                                <div class="d-flex">
+                                    <div class="col-7">
+                                        <p>Количество ваших бонусов:</p>
+                                        <div class="coins-block mx-5">
+                                            <div>
+                                                <img src="{% static 'images/catCoin.png' %}" class="img-coins z-2">
+                                            </div>
+                                            <div class="mx-2" id="inf_user_coins"></div>
+                                        </div>
+                                    </div>
+                                    <div class="col-5" id="coin_form">
+                                        <label class="form-label mx-4">Сколько мы спишем?</label>
+                                        <input class="form-control" id="id_coins" type="number" name="coins">
+                                        <div class="invalid-feedback" style="text-transform: lowercase" id="id_coins_feedback"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3 px-2">
+                                <label class="form-label txt-headline txt-select text-center fs-4 mx-4">К оплате: </label>
+                                <div class="d-flex">
+                                    <div class="col-6">
+                                        <input id="id_cost" class="form-control" name="cost" value="200" readonly>
+                                    </div>
+                                    <div class="col-2 px-3 pt-1 txt-headline txt-select" id="multiply_quantity">Х1</div>
+                                    <div class="col-2 pt-1 txt-headline txt-select" id="minus_coin"></div>
+                                </div>
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_cost_feedback"></div>
+                            </div>
+                    </div>
+                    <div class="modal-footer my-modal-header">
+                        <button type="submit" class="btn btn-dark btn-block">Перейти к оплате</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block add_css %}
+    <link rel="stylesheet" href="{% static "css/4_columns.css" %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="txt-headline text-center pt-5">Наши мурчащие сотрудники<img height="50rem" src="{% static "/images/icons8-cat-footprint-64.png" %}"></h2>
+    <div class="my-4 text-center txt-content pb-1">На этой странице вы можете <span class="text-wavy">познакомиться поближе</span> с нашими пушистыми красавцами и красавицами!
+        В нашем Кото-кафе мы не только заботимся о наших котах, но и приглашаем вас стать частью их жизни. Если вы влюбились
+        в одного из наших пушистиков и <span class="text-wavy">хотите подарить ему дом</span>, мы будем рады помочь вам в этом.
+        У нас есть <span class="text-wavy">возможность усыновления</span>, и мы ищем любящие семьи для наших котиков. Если вам по каким-то причинам не подходит этот вариант,
+        но желание помочь все еще есть, то <span class="text-wavy">вы можете оформить опекунство</span>.
+    </div>
+    <div class="d-flex justify-content-center pb-3 pt-3">
+        <a href="{% url 'cats:adopt' %}" class="mx-4 py-2 btn btn-primary btn-bg-color fs-4">взять в семью</a>
+        <a href="{% url 'cats:give' %}" class="mx-4 py-2 btn btn-primary btn-bg-color fs-4">отдать</a>
+        <a href="{% url 'cats:guardianship' %}" class="mx-4 py-2 btn btn-primary btn-bg-color fs-4">взять под опеку</a>
+    </div>
+    <div class="block-cats my-5 p-3">
+        <div class="row row-cols-2">
+            {% for cat in cats %}
+                <div class="col-6 d-flex">
+                    <div class="col-6">
+                        <img class="cat-img" src="{{ cat.image }}">
+                    </div>
+                    <div class="col-6 container-col my-4 px-3">
+                        <p class="text-center pt-3 txt-headline txt-select-cat">
+                            <img class="cat-name-img rotate" src="{% static "/images/icons8-cat-footprint-64.png" %}">
+                            {{ cat.name }}
+                            <img class="cat-name-img" src="{% static "/images/icons8-cat-footprint-64.png" %}">
+                        </p>
+                        <p class="txt-content">{{ cat.description }}</p>
+                        <p class="txt-content">День рождения: <span class="txt-headline txt-select-cat">{{ cat.birthday }}</span></p>
+                        <div class="d-flex">
+                            <p class="txt-content">Пол: <span class="txt-headline txt-select-cat">{{ cat.gender }}</span></p>
+                            <p class="txt-content px-3">Порода: <span class="txt-headline txt-select-cat">{{ cat.breed }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

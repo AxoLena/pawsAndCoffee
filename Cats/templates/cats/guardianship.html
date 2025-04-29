@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 class="txt-headline text-center my-5">Как взять котика под свою опеку?</h2>
+    <p class="txt-content px-3">Если вы не можете взять кошку в семью, но хотите ей очень помочь, то у нас есть для вас прекрасное предложение - опекунство!</p>
+    <ul class="txt-content">
+        <li class="list-img list-item py-2">Вы <span class="txt-headline txt-select">подписываетесь </span>на платеж от 400₽ в месяц;</li>
+        <li class="list-img list-item py-2">На эту сумму можно <span class="txt-headline txt-select">бесплатно
+            посещать своего любимца в котокафе</span>;</li>
+        <li class="list-img list-item py-2"><span class="txt-headline txt-select">Как мы тратим ваши деньги?</span> — Мы делаем все,
+            чтобы быстрее найти семью для этого котика, <span class="txt-headline txt-select">продвигаем в социальных сетях и приглашаем фотографов для качественных фото</span>;</li>
+        <li class="list-img list-item py-2">В любой момент вы можете <span class="txt-headline txt-select">отменить</span> свою подписку
+            в <span class="txt-headline txt-select">личном кабинете</span>
+            или <span class="txt-headline txt-select">связаться с нами</span>;</li>
+        <li class="list-img list-item py-2">Как только котик находит семью, мы <span class="txt-headline txt-select">прекращаем подписку
+            и упоминаем вас в посте-отчете.</span></li>
+    </ul>
+    <div class="row pt-5">
+        <div class="container pt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-6 bg-white rounded form-cats mb-5">
+                    <h2 class="text-white text-center txt-headline pt-4">Оформление подписки</h2>
+                    <div class="bg-white p-4 mx-5 mb-5 mt-3">
+                        <form action="{% url 'cats:adopt' %}" id="cat_forms" method="post">
+                            {% csrf_token %}
+                            <div class="d-flex flex-column align-items-center txt-content mt-4">
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.name.id_for_lable }}">Ваше имя<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.name }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_name_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.phone.id_for_lable }}">Телефон<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.phone }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_phone_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.email.id_for_lable }}">Эл. почта<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.email }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_email_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.social.id_for_lable }}">Ссылки на соц. сети</label>
+                                    {{ form.social }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_social_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.cat_name.id_for_lable }}">Выберите котика<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.cat_name }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_cat_name_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-4">
+                                    <label class="form-label mx-4" for="{{ form.amount_of_money.id_for_lable }}">Стоимость подписки<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.amount_of_money }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_amount_of_money_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.interval.id_for_lable }}">Период<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.interval }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_interval_feedback"></div>
+                                </div>
+                                <button type="submit" class="btn btn-dark btn-block my-4">Перейти к оплате</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block add_scripts %}
+    <script src="{% static "js/js-msg.js" %}"></script>
+    <script src="{% static "js/jq-ajax-cats.js" %}"></script>
+{% endblock %}

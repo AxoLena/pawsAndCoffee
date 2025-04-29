@@ -1,0 +1,13 @@
+{% extends 'admin/change_list.html' %}
+
+{% block object-tools %}
+  <form action="import/create/" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Заполнить расписание до конца месяца" />
+  </form>
+  <form action="import/delete/" method="POST">
+    {% csrf_token %}
+    <input type="submit" value="Удалить все записи" />
+  </form>
+    {{ block.super }}
+{% endblock %}

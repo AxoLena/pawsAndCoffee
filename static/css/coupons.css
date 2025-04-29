@@ -1,0 +1,245 @@
+@font-face{
+    font-family: "Club Fluffy";
+    src: url("../fonts/ClubFluffy-710B.ttf");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face{
+    font-family: "RubikBubbles";
+    src: url("../fonts/RubikBubbles-Regular.ttf");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face{
+    font-family: "ShantellSans";
+    src: url("../fonts/ShantellSans-VariableFont_BNCE,INFM,SPAC,wght.ttf");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face{
+    font-family: "Sweetbabe";
+    src: url("../fonts/Sweetbabe-r5gx.ttf");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face{
+    font-family: "universe";
+    src: url("../fonts/universe-2.ttf");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+.container-cards{
+    height: 17rem;
+    width: 75%;
+    margin: auto;
+    display: flex;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    gap: 1rem;
+}
+
+.card-discounts{
+    flex: 0 0 9.5rem;
+    box-shadow: rgb(0 0 0 / 10%) 0px 0px 10px -1px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+
+
+
+.css-CATINPARTYHAD{
+    background-image: url("../images/bg-coupon1.jpg");
+    background-size: 90%;
+    background-repeat: no-repeat;
+}
+
+.css-CATINPARTYHAD .img{
+    background-image: url("../images/cat_in_a_party_hat.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    height: 100%;
+    position: relative;
+}
+
+.css-CATINPARTYHAD p:first-child{
+    color: #FF1493;
+    -webkit-text-stroke: 1px #030303;
+    text-stroke: 1px #030303;
+    font-family: "RubikBubbles";
+    font-size: 1.5rem;
+    bottom: 37%;
+    right: 1.5rem;
+    transform: rotate(90deg);
+    position: absolute;
+}
+
+.css-CATINPARTYHAD p:nth-child(2){
+    width: 50%;
+    top: .7rem;
+    right:1.3rem;
+    position: absolute;
+    font-size: .9rem;
+    font-family: 'ShantellSans';
+}
+
+.css-CATINPARTYHAD p:nth-child(3){
+    top: 6rem;
+    right:1.3rem;
+    color: #FF1493;
+    position: absolute;
+    font-size: .9rem;
+    font-family: 'ShantellSans';
+}
+
+
+
+
+.css-FULLOFROMANTIC{
+    background-image: url("../images/bg-coupon5.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    position: relative;
+    height: 100%;
+}
+
+.css-FULLOFROMANTIC p:first-child{
+    color: #4f021490;
+    -webkit-text-stroke: 1px #4f021490;
+    text-stroke: 1px #4f021490;
+    font-family: "Sweetbabe";
+    font-size: 1.1rem;
+    font-weight: 600;
+    position: absolute;
+    top: .5rem;
+    right: .3rem;
+}
+
+.css-FULLOFROMANTIC p:nth-child(2){
+    width: 40%;
+    bottom: -1rem;
+    left: .1rem;
+    position: absolute;
+    text-align: center;
+    font-size: .9rem;
+    font-family: 'ShantellSans';
+    color: #260118;
+}
+
+.css-FULLOFROMANTIC p:nth-child(3){
+    width: 40%;
+    bottom: -1rem;
+    right: .1rem;
+    position: absolute;
+    text-align: center;
+    font-size: 1.5rem;
+    font-family: 'ShantellSans';
+    color: #4f0214;
+}
+
+
+
+.css-MEOWX2{
+    background-image: url("../images/bg-coupon8.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    position: relative;
+    height: 100%;
+}
+
+.css-MEOWX2 p:first-child{
+    color: #fce7b3fc;
+    font-family: "universe";
+    font-size: 2rem;
+    position: absolute;
+    bottom: -1rem;
+    right: .2rem;
+    letter-spacing: .1rem;
+}
+
+.css-MEOWX2 p:nth-child(2){
+    width: 90%;
+    bottom: 2rem;
+    left: .4rem;
+    position: absolute;
+    text-align: center;
+    font-size: .9rem;
+    font-family: 'ShantellSans';
+    color: #8a7ead;
+}
+
+.css-MEOWX2 p:nth-child(3){
+    width: 90%;
+    bottom: 4rem;
+    left: .4rem;
+    position: absolute;
+    text-align: center;
+    font-size: 2rem;
+    font-family: "universe";
+    color: #fce7b3fc;
+}
+
+
+
+.css-FIRSTMEOW .img{
+    background-image: url("../images/cat-podgliadel.png");
+    background-size: 90%;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    height: 100%;
+    position: relative;
+}
+
+.css-FIRSTMEOW{
+    background-image: url("../images/bg-coupon6.jpg");
+    background-size: 100%;
+    background-repeat: no-repeat;
+    position: relative;
+    height: 100%;
+}
+
+.css-FIRSTMEOW p:first-child{
+    color: #fce7b3fc;
+    -webkit-text-stroke: 0.9px #736b54fc;
+    text-stroke: 0.9px #030303;
+    font-family: "Club Fluffy";
+    font-size: 3.5rem;
+    position: absolute;
+    top: 4rem;
+    letter-spacing: .5rem;
+}
+
+.css-FIRSTMEOW p:nth-child(2){
+    width: 90%;
+    top: 3rem;
+    left: .4rem;
+    position: absolute;
+    text-align: center;
+    font-size: .9rem;
+    font-family: 'ShantellSans';
+    color: #bcbceefc;
+}
+
+.css-FIRSTMEOW p:nth-child(3){
+    width: 40%;
+    top: 8rem;
+    right: 3rem;
+    position: absolute;
+    text-align: center;
+    font-size: 2rem;
+    font-family: 'ShantellSans';
+    color: #fce7b3fc;
+    -webkit-text-stroke: 0.5px #030303;
+    text-stroke: 0.5px #030303;
+}

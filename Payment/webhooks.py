@@ -4,14 +4,14 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import stripe
-from yookassa import Webhook, Configuration, Payment
+from yookassa import Configuration, Payment
 from yookassa.domain.common import SecurityHelper
 from yookassa.domain.notification import WebhookNotificationFactory, WebhookNotificationEventType
 
 from Booking.models import Booking, Schedule
 from Cats.models import FormForGuardianship
 from Payment.models import CheckoutSessionStripe
-from Users.models import CustomUser
+from Payment.tasks import send_order_notification
 
 
 def get_client_ip(request):
@@ -54,6 +54,7 @@ def stripe_webhook(request):
                         user.coins.increased(discount=10, payment_amount=booking.cost,
                                              description=f'Бронь на {booking.data} {booking.time}')
                         user.save()
+                    send_order_notification.delay(order_id=booking_id, flag='booking')
                     booking.save()
 
                 case 'subscription':
@@ -76,6 +77,7 @@ def stripe_webhook(request):
                         user.coins.increased(discount=10, payment_amount=guardian.plan.unit_amount,
                                              description=f'Подписка на {guardian.plan.name}')
                         user.save()
+                    send_order_notification.delay(order_id=guardian_id, flag='guardian')
                     guardian.save()
     return HttpResponse(status=200)
 
@@ -113,6 +115,7 @@ def yookassa_webhook(request):
                     guardian = FormForGuardianship.objects.get(id=payment_info.extra_param.id)
                     guardian.is_paid = payment_info.status
                     guardian.payment_method = payment_info.payment_method
+                    send_order_notification.delay(order_id=guardian.id, flag='guardian')
                     guardian.save()
                     if guardian.user:
                         user = guardian.user
@@ -122,6 +125,7 @@ def yookassa_webhook(request):
                 case 'booking':
                     booking = Booking.objects.get(id=payment_info.extra_param.id)
                     booking.is_paid = payment_info.status
+                    send_order_notification.delay(order_id=booking.id, flag='booking')
                     booking.save()
                     if booking.user and not booking.coupon and booking.bonuses != 0:
                         user = booking.user

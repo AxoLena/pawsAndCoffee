@@ -84,7 +84,7 @@ class CustomUser(AbstractUser, PermissionsMixin):
     ]
 
     username = models.CharField(unique=False, verbose_name='Имя пользователя', max_length=30)
-    phone = models.CharField(unique=True, verbose_name='номер телефона')
+    phone = models.CharField(unique=True, verbose_name='номер телефона', db_index=True)
     email = models.EmailField(max_length=254, unique=True, verbose_name='Эл. почта')
     coins = models.OneToOneField(to=Coin, on_delete=models.CASCADE, verbose_name='Мяукоины', null=True, blank=True)
     birthday = models.DateField(blank=True, null=True, verbose_name='дата рождения')

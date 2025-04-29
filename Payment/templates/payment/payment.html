@@ -1,0 +1,59 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "css/null.css" %}">
+    <link rel="stylesheet" href="{% static "css/my_css.css" %}">
+    <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <img class="bg-payment" src="{% static 'images/cat_money.png' %}">
+    <img class="bg-payment" src="{% static 'images/money.png' %}">
+    <img class="bg-payment" src="{% static 'images/rich_cat.png' %}">
+    <section>
+        <div class="container">
+            <h1 class="text-wavy txt-headline text-center py-4 mt-5 fs-1"><a href="{% url 'main:index' %}">Лапки&Кофе</a></h1>
+            <div class="row">
+                <div class="container pt-4">
+                    <div class="row justify-content-center mt-2">
+                        <div class="col-md-6 bg-white rounded form-payment">
+                            <div class="bg-dark-white p-4 m-4">
+                                <form action="
+                                {% if request.resolver_match.url_name == 'select-guardianship' %}
+                                    {% url 'payment:select-guardianship' %}
+                                {% else %}
+                                    {% url 'payment:select-booking' %}
+                                {% endif %}
+                                " method="post">
+                                    {% csrf_token %}
+                                    <h2 class="text-center txt-content py-4 fs-4 mb-4">Выберите способ оплаты</h2>
+                                    <div class="d-flex flex-column align-items-center py-4">
+                                        <div class="row justify-content-center col-5">
+                                            <button type="submit" class="btn s-btn btn-dark btn-block mb-4" name="stripe" value="stripe">
+                                                <img src="{% static 'svg/stripe.svg' %}" height="40rem">
+                                            </button>
+                                            <button type="submit" class="btn y-btn btn-dark btn-block" name="yookassa" value="yookassa">
+                                                <img src="{% static 'svg/yookassa.svg' %}" height="40rem">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="{% static "js/jquery/jquery-3.7.0.min.js" %}"></script>
+    <script src="{% static "js/jquery-ajax.js" %}"></script>
+    <script src="{% static "js/bootstrap.bundle.min.js" %}"></script>
+    {% block add_scripts %}{% endblock %}
+</body>
+</html>

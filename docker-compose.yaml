@@ -1,0 +1,83 @@
+version: "3.5"
+
+volumes:
+  postgres_data:
+  static:
+  media:
+
+services:
+  db:
+    image: postgres:16.3
+    container_name: pawsAndCoffee-db-test
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    restart: always
+
+  django:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: PawsAndCoffee-django-test
+    env_file:
+      - .env
+    volumes:
+      - ./static:/app/static
+      - ./media:/app/media
+      - ./:/app
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    restart: always
+    command:
+      sh -c "python3 manage.py collectstatic --noinput &&
+      python3 manage.py makemigrations &&
+      python3 manage.py migrate &&
+      gunicorn pawsAndCoffee.wsgi:application --bind 0.0.0.0:8000 --timeout 1200 --workers 4 &&
+      stripe listen --forward-to localhost:8000/payment/webhook-stripe/"
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: PawsAndCoffee-redis-test
+    restart: unless-stopped
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: PawsAndCoffee-celery-test
+    env_file: .env
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./static:/app/static
+    restart: always
+    command: celery -A pawsAndCoffee.celery worker -l INFO -B
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+  nginx:
+    build:
+      dockerfile: ./Dockerfile
+      context: ./docker/nginx/
+    container_name: PawsAndCoffee-nginx-test
+    working_dir: /app
+    volumes:
+      - ./static:/app/static
+      - ./media:/app/media
+    ports:
+      - "80:80"
+    restart: always
+    depends_on:
+      - django

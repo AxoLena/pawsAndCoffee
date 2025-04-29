@@ -1,0 +1,53 @@
+.row-box{
+    position: relative;
+}
+
+.box{
+    display: block;
+/*    width: 55%;*/
+    position: absolute;
+}
+
+.box img {
+    width: 300px;
+    object-position: 50% 50%;
+    object-fit: cover;
+    padding: 1% 0;
+}
+
+.box:nth-child(1){
+    left: 340px;
+    top: 40px;
+}
+
+.box:nth-child(2){
+    left: 10px;
+    top: -50px;
+}
+
+.box:nth-child(3){
+    left: -10px;
+    top: 280px;
+}
+
+.box:nth-child(4){
+    left: 330px;
+    top: -60px;
+    transform: rotate(15deg);
+}
+
+.box:nth-child(5){
+    left: -70px;
+    top: 390px;
+}
+
+.box:nth-child(6){
+    left: 320px;
+    top: 600px;
+}
+
+.box:nth-child(7){
+    left: 280px;
+    top: 530px;
+    transform: rotate(-30deg);
+}

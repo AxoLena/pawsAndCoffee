@@ -1,0 +1,43 @@
+.bg-pink{
+/*    background-color: #ffd6e0cb;*/
+    background-image: linear-gradient(rgba(241, 174, 174, 0.4), rgba(241, 174, 174, 0.8)),
+    url("../images/bg_for_contacts.jpg");
+    background-size: 300px;
+}
+
+.list-item-contact{
+    padding-left: 40px;
+    margin-left: 50px;
+    margin-bottom: 1.25rem;
+}
+
+.list-img-contact{
+    background-repeat: no-repeat;
+    background-size: 30px;
+    background-position: 0px 5px;
+}
+
+.list-img-contact:first-child{
+  background-image: url('../icons/github-mark.svg');
+}
+
+.list-img-contact:nth-child(2){
+  background-image: url('../icons/tg-logo.svg');
+}
+
+.list-img-contact:last-child{
+  background-image: url('../icons/gmail-icon.png');
+}
+
+.select-active{
+  background-color: #ffd6e0cb;
+}
+
+.copy-btn{
+  background-color: transparent;
+  border: none;
+}
+
+.copy-btn:hover {
+    filter: brightness(0) saturate(100%) invert(91%) sepia(39%) saturate(4078%) hue-rotate(280deg) brightness(92%) contrast(91%);
+}

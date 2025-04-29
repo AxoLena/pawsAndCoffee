@@ -1,0 +1,102 @@
+*{
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.my-container{
+    position: absolute;
+    overflow: hidden;
+    width: 850px;
+    height: 540px;
+    background-color: #ffffff;
+    -moz-box-shadow: rgba(0, 0, 0, 0.1) 0px 10px 30px;
+    -webkit-box-shadow: rgb(0 0 0 / 10%) 0px 10px 30px;
+    box-shadow: rgb(0 0 0 / 10%) 0px 10px 30px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.half{
+    float: left;
+    width: 50%;
+    height: 100%;
+    padding: 58px 40px 0;
+}
+
+.half.bg{
+    background-image: url('../images/bg-cat-auth.jpeg');
+    background-size: 400px;
+    background-position: right;
+    background-repeat: repeat-y;
+}
+
+.tabs{
+    width: 100%;
+    margin-bottom: 29px;
+    border-bottom: 2px solid #d9d9d9;
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+}
+
+.tabs .tab{
+    background-image: url('../images/ears.png');
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: 100% 4.2rem;
+    position: relative;
+    text-align: center;
+    width: 9rem;
+    height: 4.2rem;
+    margin-bottom: -1px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #d9d9d9;
+    -moz-user-select: -moz-none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: all 0.1s ease-in-out;
+    display: grid;
+    align-items: end;
+}
+
+.tabs .tab a {
+    position:absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 0;
+    font-size: 14px;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: #fff;
+    transition: all 0.1s ease-in-out;
+}
+
+.tabs .tab.active a, .tabs .tab:hover a {
+  color: #263238;
+}
+
+.tabs .tab.active{
+  border-bottom: 1px solid #263238;
+}
+
+.inpt{
+    font-size: 14px;
+}
+
+.forgot{
+    text-decoration: none;
+    color: #d9d9d9;
+    transition: all 0.1s ease-in-out;
+}
+
+.forgot:hover{
+    text-decoration: underline;
+    color: #263238;
+}
+
+.content .signup-cont, .visits-cont, .guardianship-cont, .bonuses-cont{
+  display: none;
+}

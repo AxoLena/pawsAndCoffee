@@ -17,22 +17,6 @@ class ProductStripe(models.Model):
     def __str__(self):
         return f'Котик {self.name}'
 
-    def save(self, *args, **kwargs):
-        products = stripe.Product.list()
-        for product in products.data:
-            if product.name != self.name:
-                try:
-                    new_product = stripe.Product.create(
-                        name=self.name,
-                        description=self.description,
-                    )
-                    self.product_id = new_product.id
-                except Exception as e:
-                    raise ValidationError(str(e))
-            else:
-                self.product_id = product.id
-        super(ProductStripe, self).save(*args, **kwargs)
-
     def delete(self, *args, **kwargs):
         try:
             stripe.Product.delete(self.product_id)

@@ -1,0 +1,62 @@
+{% load static %}
+
+{% block add_css %}
+    <link rel="stylesheet" href="{% static "css/index_photos.css" %}">
+{% endblock %}
+
+<div class="container">
+    <div class="d-flex justify-content-between" id="about_us">
+        <div class="row-box">
+            <div class="box">
+                <img src="{% static "/images/kot2.jpg" %}">
+            </div>
+            <div class="box">
+                <img src="{% static "/images/kot1.jpg" %}">
+            </div>
+            <div class="box">
+                <img src="{% static "/images/kot3.jpg" %}">
+            </div>
+            <div class="box">
+                <img class="img-hearts" src="{% static "/images/heartspng.png" %}">
+            </div>
+            <div class="box">
+                <img class="img-hearts" src="{% static "/images/heartspng.png" %}">
+            </div>
+            <div class="box">
+                <img src="{% static "/images/kot4.jpg" %}">
+            </div>
+            <div class="box">
+                <img class="img-hearts" src="{% static "/images/heartspng.png" %}">
+            </div>
+        </div>
+        <div class="px-5 w-50 txt-content text-center">
+            <p>Добро пожаловать в <span class="txt-headline txt-select">"Лапки и кофе"</span> — уютное кото-кафе, а также мой
+                <span class="text-wavy">личный полноценный проект с использованием веб-фреймворка Django Rest Framework</span>.
+            </p>
+            <p>
+                Данный веб-ресурс в первую очередь разработан для онлайн-продажи билетов в кото-кафе,
+                обеспечивающий удобство бронирования для будущих посетителей. Помимо этого сайт предоставляет и другой функционал, такой как
+                оформление опекунства (в формате подписки), запись на взятие в семью понравившегося котика,
+                оформление заявки на передачу пушистика в кафе, просмотр информации обо всех имеющихся котиках и самом заведении, а самое главное -
+                регистрация и авторизация пользователей, включающие личный кабинет с информацией об аккаунте и возможностью ее изменить.
+                На сайте реализована оплата покупок - в тестовом виде - и система лояльности: бонусы в виде баллов за покупку на сайте,
+                а также несколько промокодов.
+            </p>
+            <p>
+                Проект был <span class="txt-headline txt-select">создан в учебных целях</span> для лучшего понимания устройства веб-сайтов.
+                В процессе создания веб-сайта я приобрела обширный опыт в разработке и интеграции различных технологий. Я освоила работу с
+                <span class="text-wavy">Django REST Framework (DRF)</span> для создания эффективных API, а также научилась взаимодействовать с
+                API сторонних сервисов. Успешно интегрировала системы обработки электронных платежей <span class="text-wavy">Stripe и ЮKassa</span>,
+                что позволило реализовать работу с денежными операциями. Для управления аутентификацией пользователей использовала библиотеку
+                <span class="text-wavy">Djoser</span>. Я также поработала с асинхронными задачами, используя <span class="text-wavy">Celery</span>,
+                для повышения производительности, реализовала кеширование данных с помощью <span class="text-wavy">Redis и django-cachalot</span>.
+                Кроме того, я приобрела навыки контейнеризации приложений с использованием <span class="text-wavy">Docker</span>,
+                настройки веб-сервера <span class="text-wavy">Nginx</span>, подготовки файлов для деплоя и самого деплоя приложения.
+            </p>
+            <p>
+               Надеюсь, этот опыт станет прочной основой для дальнейших профессиональных достижений и будущие проекты будут ещё более
+                успешными и интересными!
+            </p>
+        </div>
+    </div>
+</div>

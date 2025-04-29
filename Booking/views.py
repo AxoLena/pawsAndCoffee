@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.urls import reverse
 from django.views.generic import TemplateView
 from rest_framework import views, status, generics
 from rest_framework.response import Response
@@ -6,10 +8,10 @@ from datetime import datetime
 from Booking.models import Schedule, Booking
 from Booking.serializers import ScheduleSerializer, BookingSerializer
 from Booking.forms import BookingForm
-from mixins.mixins import RequestsGETMixin
+from mixins.mixins import GetCacheMixin
 
 
-class ScheduleView(RequestsGETMixin, TemplateView):
+class ScheduleView(GetCacheMixin, TemplateView):
     template_name = 'booking/schedule.html'
 
     def get_context_data(self, **kwargs):
@@ -22,7 +24,8 @@ class ScheduleView(RequestsGETMixin, TemplateView):
             context['form'] = form
         else:
             context['form'] = BookingForm
-        inf = self.get_dict(url="http://localhost:8000/api/information/")
+        inf = self.get_cache_for_context(cache_name=settings.MAIN_INFORMATION_CACHE_NAME,
+                                         url=self.request.build_absolute_uri(reverse('main:information')), time=60*60)
         context['inf'] = inf
         return context
 

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block add_css %}
+    <link rel="stylesheet" href="{% static "css/users_forms.css" %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="my-container mt-3">
+        <div class="half">
+            <div class="tabs">
+                <span class="tab signin active txt-headline"><a style="letter-spacing: .1rem">Войти</a></span>
+                <span class="tab signup txt-headline"><a style="letter-spacing: .1rem">Регистрация</a></span>
+            </div>
+            <div class="content">
+                <div class="signin-cont cont">
+                    <form action="{% url 'users:page_login' %}" method="post" class="txt-content inpt pt-3" id="user_forms_login">
+                        {% csrf_token %}
+                        <div id="id_feedback" class="invalid-feedback text-center pb-4">Неправильно указан логин и/или пароль</div>
+                        <div class="mb-4">
+                            <label class="form-label mx-4" for="{{ form1.email.id_for_lable }}">Эл. почта<span class="txt-headline txt-select">*</span></label>
+                            {{ form1.email }}
+                            <div class="invalid-feedback" style="text-transform: lowercase" id="id_email_feedback"></div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label mx-4" for="{{ form1.password.id_for_lable }}">Пароль<span class="txt-headline txt-select">*</span></label>
+                            {{ form1.password }}
+                            <div class="invalid-feedback" style="text-transform: lowercase" id="id_password_feedback"></div>
+                        </div>
+                        <div class="row justify-content-center me-6 pt-4">
+                            <button type="submit" class="btn btn-dark btn-block col-7">Войти</button>
+                            <a class="text-center col-6 pt-3 forgot txt-content" href="{% url 'users:reset_password' %}">Забыли пароль?</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="signup-cont cont">
+                    <form action="{% url 'users:page_login'%}" method="post" class="txt-content needs-validation inpt" id="user_forms" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label mx-4" for="{{ form.username.id_for_lable }}">Логин<span class="txt-headline txt-select">*</span></label>
+                                {{ form.username }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_username_feedback"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label mx-4" for="{{ form.phone.id_for_lable }}">Номер телефона<span class="txt-headline txt-select">*</span></label>
+                                {{ form.phone }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_phone_feedback"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label mx-4" for="{{ form.email.id_for_lable }}">Эл. почта<span class="txt-headline txt-select">*</span></label>
+                                {{ form.email }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_email_feedback"></div>
+                            </div>
+                            <div class="col-md-6 mb-3 mt-2">
+                                <label class="form-label mx-4" for="{{ form.birthday.id_for_lable }}">Дата рождения</label>
+                                {{ form.birthday }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_birthday_feedback"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label mx-4" for="{{ form.password.id_for_lable }}">Пароль<span class="txt-headline txt-select">*</span></label>
+                                {{ form.password }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_password_feedback"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label mx-4" for="{{ form.password2.id_for_lable }}">Подтверждение<span class="txt-headline txt-select">*</span></label>
+                                {{ form.password2 }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_password2_feedback"></div>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center pt-4">
+                            <button type="submit" class="btn btn-dark btn-block col-6">Зарегистрироваться</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="half bg"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block add_scripts %}
+    <script src="{% static "js/js-msg.js" %}"></script>
+    <script src="{% static "js/jq-ajax-users-login.js" %}"></script>
+{% endblock %}

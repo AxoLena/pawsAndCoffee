@@ -1,18 +1,22 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
+from djoser.email import BaseDjoserEmail
 from rest_framework import viewsets
+from rest_framework.decorators import action
 
 from Users.forms import UserLoginForm, UserChangeProfileForm, UserRegForm, UserResetForm, UserSetPasswordForm
 from Users.serializers import UserProfileSerializer
 from Users.models import CustomUser
 from Booking.models import Booking
 from Cats.models import FormForGuardianship
-from mixins.mixins import RequestsGETMixin, GetAuthToken
+from mixins.mixins import GetCacheMixin, GetAuthTokenMixin
 from permissions.permissions import IsAdminOrAuthenticatedReadOnly
+from Users.tasks import custom_reset_password
 
 
 class UserLoginRegView(View):
@@ -67,15 +71,40 @@ class UserResetNewPasswordView(View):
         return render(request, 'users/reset_new_password.html', context=self.context)
 
 
-class UserProfileView(LoginRequiredMixin, RequestsGETMixin, GetAuthToken, View):
+class CustomPasswordResetEmail(BaseDjoserEmail):
+    template_name = "email/password_reset.html"
+
+    def get_context_data(self, request):
+        email = request.GET.get('email')
+        try:
+            user = CustomUser.objects.get(email=email)
+        except CustomUser.DoesNotExist:
+            return JsonResponse({'email': 'Пользователя с такой почтой не найдено'})
+
+        reset_email_context = custom_reset_password.delay(user=user, request=request)
+        new_values = {key: value for (key, value) in reset_email_context.items()}
+
+        context = super().get_context_data()
+        context.update(new_values)
+
+        return context
+
+
+class UserProfileView(LoginRequiredMixin, GetCacheMixin, GetAuthTokenMixin, View):
     context = {
         'title': 'Личный кабинет'
     }
 
     def get(self, request, *args, **kwargs):
         user_pk = request.user.pk
-        user = self.get_dict(url=f'http://127.0.0.1:8000/user/api/auth/profile/{user_pk}/inf/', headers=self.get_auth_token(request))
-        coupons = self.get_dict(url='http://127.0.0.1:8000/bonus/api/coupon/list/')
+
+        user = self.get_cache_for_context(cache_name=f'user_profile_cache_{user_pk}',
+                                          url=request.build_absolute_uri(reverse(
+                                              'users:inf_about_user_profile', args=[user_pk]
+                                          )),
+                                          headers=self.get_auth_token(request), time=60 * 60)
+        coupons = self.get_cache_for_context(cache_name=settings.COUPONS_CACHE_NAME,
+                                             url=request.build_absolute_uri(reverse('bonuses:coupon-list')), time=60 * 60)
         self.context['user'] = user
         self.context['coupons'] = coupons
         return render(request, 'users/profile.html', context=self.context)
@@ -127,7 +156,7 @@ class UserLogoutView(View):
 
 class UserAccountViewSet(viewsets.ModelViewSet):
     serializer_class = UserProfileSerializer
-    permission_classes = [IsAdminOrAuthenticatedReadOnly]
 
+    @action(detail=True, methods=['get'], permission_classes=[IsAdminOrAuthenticatedReadOnly])
     def get_queryset(self):
         return CustomUser.objects.filter(id=self.kwargs['pk'])

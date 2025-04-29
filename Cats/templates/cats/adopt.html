@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 class="txt-headline text-center my-5">Как приютить котика из нашего кафе?</h2>
+    <ul class="txt-content">
+        <li class="list-img list-item py-2">Кошка отдается вам <span class="txt-headline txt-select">воспитанной, социализированной, привитой,с
+            ветеринарным паспортом, приученной к лотку, обработанной от внешних и внутренних паразитов, чипированной, стерилизованной</span>.
+        </li>
+        <li class="list-img list-item py-2">Чтобы взять ее в дом, достаточно <a href="#cat_forms" class=" a-default txt-headline txt-select">
+            заполнить анкету</a> расположенную ниже.
+        </li>
+        <li class="list-img list-item py-2">Мы ответим на вашу заявку в <span class="txt-headline txt-select">течение семи дней</span>.</li>
+        <li class="list-img list-item py-2">Мы можем вам <span class="txt-headline txt-select">отказать</span>.
+            При рассмотрении всех кандидатов, выборм падает на того, кто сможет, стать хорошей семьей именно для выбранной кошки.
+            Если мы видим, что <span class="txt-headline txt-select">кошке может быть некомфортно с вами</span>
+            или существуют какие-либо <span class="txt-headline txt-select">другие препятствующие причины</span>, то мы можем вам отказать.
+            Сообщение о принятом нами решении <span class="txt-headline txt-select">придет вам на почту или телефон</span>.
+        </li>
+        <li class="list-img list-item py-2">Если вы нам понравитесь, то <span class="txt-headline txt-select">проводится с
+            вами встреча (лично или удаленно)</span>, для дальнейшего знакомства.</li>
+        <li class="list-img list-item py-2">При положительном рассмотрении анкеты и собеседования, мы
+            <span class="txt-headline txt-select">заключаем с вами договор</span>, по которому мы оказываем вам поддержку в каких-либо случаях
+            с котом, а также просим вас не причинять коту или кошке ничего плохого.
+            Передаем вам ветеринарный анализ и текущие анализы животного. А позже доставляем котика вам домой.</li>
+        <li class="list-img list-item py-2">Пожалуйста, обратите внимание, что <span class="txt-headline txt-select">
+            все операции пристройства кошки бесплатны</span>.</li>
+    </ul>
+    <div class="row pt-5">
+        <div class="container pt-4">
+            <div class="row justify-content-center">
+                <div class="col-md-6 bg-white rounded form-cats mb-5">
+                    <h2 class="text-white text-center txt-headline pt-4">Анкета для усыновления</h2>
+                    <div class="bg-white p-4 mx-5 mb-5 mt-3">
+                        <form action="{% url 'cats:adopt' %}" id="cat_forms" method="post">
+                            {% csrf_token %}
+                            <div class="d-flex flex-column align-items-center txt-content mt-4">
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.name.id_for_lable }}">Ваше имя<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.name }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_name_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.phone.id_for_lable }}">Телефон<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.phone }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_phone_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.email.id_for_lable }}">Эл. почта<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.email }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_email_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.social.id_for_lable }}">Ссылки на соц. сети</label>
+                                    {{ form.social }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_social_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                    <label class="form-label mx-4" for="{{ form.cat_name.id_for_lable }}">Выберите котика<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.cat_name }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_cat_name_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-4">
+                                    <label class="form-label mx-4" for="{{ form.why_this_cat.id_for_lable }}">Почему именно этот котик?<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.why_this_cat }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_why_this_cat_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-1">
+                                    {{ form.children }}
+                                    <label class="form-label mx-2" for="{{ form.children.id_for_lable }}">У вас есть дети?<span class="txt-headline txt-select">*</span></label>
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_children_feedback"></div>
+                                </div>
+                                <div class="col-md-10 mb-3">
+                                        {{ form.has_pet }}
+                                        <label class="form-label mx-2" for="{{ form.has_pet.id_for_lable }}">У вас есть животные?<span class="txt-headline txt-select">*</span></label>
+                                        <div class="invalid-feedback" style="text-transform: lowercase" id="id_has_pet_feedback"></div>
+                                    </div>
+                                <div class="col-md-10 mb-3" id="AnotherPets">
+                                    <label class="form-label mx-4" for="{{ form.pets.id_for_lable }}">Какие животные у вас еще есть?<span class="txt-headline txt-select">*</span></label>
+                                    {{ form.pets }}
+                                    <div class="invalid-feedback" style="text-transform: lowercase" id="id_pets_feedback"></div>
+                                </div>
+                                <button type="submit" class="btn btn-dark btn-block my-4">Отправить заявку</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block add_scripts %}
+    <script src="{% static "js/js-msg.js" %}"></script>
+    <script src="{% static "js/jq-ajax-cats.js" %}"></script>
+{% endblock %}

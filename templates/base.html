@@ -1,0 +1,69 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/null.css' %}">
+    <link rel="stylesheet" href="{% static 'css/my_css.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="shortcut icon" type="image/png" sizes="320x320" imagesizes="320x320" href="{% static 'favicon/cat-coffe-icon.png' %}">
+    {% block add_css %}{% endblock add_css %}
+    <title>{{ title }}</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light txt-headline">
+        <div class="container">
+            <a class="navbar-brand logo" href="{% url 'main:index' %}">Лапки&Кофе</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'booking:schedule' %}">Онлайн-запись</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cats:our_cats' %}">Наши котики</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main:index' %}#about_us">О нас</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'main:index' %}#contacts">Контакты</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="
+                            {% if request.user.is_authenticated %}
+                                {% url 'users:profile' %}
+                            {% else %}
+                                {% url 'users:page_login'%}
+                            {% endif %}
+                        ">Личный кабинет</a>
+                    </li>
+                    {% if request.user.is_authenticated and request.user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin:index' %}">Админ-панель</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    </header>
+    <section>
+        {% include "notifications.html" %}
+        {% block content %}{% endblock content %}
+    </section>
+    <script src="{% static 'js/jquery/jquery-3.7.0.min.js' %}"></script>
+    <script src="{% static 'js/jquery-plugins/jquery.cookie.js' %}"></script>
+    <script src="{% static 'js/jquery-ajax.js' %}"></script>
+    {% block add_scripts %}{% endblock %}
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>
