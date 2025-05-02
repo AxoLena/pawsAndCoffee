@@ -53,7 +53,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'Users.middleware.auth_token',
+    'Users.middleware.AuthTokenMiddleware',
 ]
 
 ROOT_URLCONF = 'pawsAndCoffee.urls'

@@ -24,19 +24,8 @@ class Cats(models.Model):
         today = d.today()
         return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
 
-    def save(self, *args, **kwargs):
-        name = self.name
-        product_is_exists = ProductStripe.objects.filter(name=name).exists()
-        if not product_is_exists:
-            description = f'Подписка на поддержание котика {name}'
-            try:
-                ProductStripe.objects.create(name=name, description=description)
-            except Exception as e:
-                raise e
-        super(Cats, self).save(*args, **kwargs)
-
     def delete(self, *args, **kwargs):
-        product = ProductStripe.objects.get(name=self.name).delete()
+        ProductStripe.objects.get(name=self.name).delete()
         super(Cats, self).delete(*args, **kwargs)
 
     def __str__(self):

@@ -147,7 +147,7 @@ class UserLogoutView(View):
     def post(self, request):
         if self.is_ajax():
             response = HttpResponseRedirect(reverse('main:index'))
-            response.delete_cookie('auth-token')
+            request.delete_cookie = True
             return response
         return HttpResponse(status=500)
 
