@@ -1,13 +1,12 @@
 import stripe
 from currency_converter import CurrencyConverter
-from django.core.exceptions import ValidationError
 from django.db import models
 
 
 class ProductStripe(models.Model):
     name = models.CharField(verbose_name='Название')
     description = models.CharField(verbose_name='Описание')
-    product_id = models.CharField(unique=True)
+    product_id = models.CharField(unique=True, null=True, blank=True)
 
     class Meta:
         db_table = 'Products'
@@ -18,11 +17,14 @@ class ProductStripe(models.Model):
         return f'Котик {self.name}'
 
     def delete(self, *args, **kwargs):
-        try:
-            stripe.Product.delete(self.product_id)
+        if self.product_id:
+            try:
+                stripe.Product.delete(self.product_id)
+                super(ProductStripe, self).delete(*args, **kwargs)
+            except Exception as e:
+                raise e
+        else:
             super(ProductStripe, self).delete(*args, **kwargs)
-        except Exception as e:
-            raise ValidationError(str(e))
 
 
 class PriceStripe(models.Model):
@@ -58,7 +60,7 @@ class PriceStripe(models.Model):
                 )
                 self.price_id = price.id
             except Exception as e:
-                raise ValidationError(str(e))
+                raise e
         super(PriceStripe, self).save(*args, **kwargs)
 
     class Meta:

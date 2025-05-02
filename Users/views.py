@@ -99,12 +99,10 @@ class UserProfileView(LoginRequiredMixin, GetCacheMixin, GetAuthTokenMixin, View
         user_pk = request.user.pk
 
         user = self.get_cache_for_context(cache_name=f'user_profile_cache_{user_pk}',
-                                          url=request.build_absolute_uri(reverse(
-                                              'users:inf_about_user_profile', args=[user_pk]
-                                          )),
+                                          url=reverse('users:account-detail', kwargs={'pk': user_pk}),
                                           headers=self.get_auth_token(request), time=60 * 60)
         coupons = self.get_cache_for_context(cache_name=settings.COUPONS_CACHE_NAME,
-                                             url=request.build_absolute_uri(reverse('bonuses:coupon-list')), time=60 * 60)
+                                             url=(reverse('bonuses:coupon-list')), time=60 * 60)
         self.context['user'] = user
         self.context['coupons'] = coupons
         return render(request, 'users/profile.html', context=self.context)

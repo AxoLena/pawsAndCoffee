@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'djoser',
     'jquery',
     'django_celery_beat',
-    'django_celery_results'
+    'django_celery_results',
+    'cachalot',
 ]
 
 MIDDLEWARE = [

@@ -1,5 +1,3 @@
-version: "3.5"
-
 volumes:
   postgres_data:
   static:
@@ -59,9 +57,9 @@ services:
       - db
       - redis
     volumes:
-      - ./static:/app/static
+      - ./:/app
     restart: always
-    command: celery -A pawsAndCoffee.celery worker -l INFO -B
+    command: celery -A pawsAndCoffee worker -l INFO -B
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -81,3 +79,19 @@ services:
     restart: always
     depends_on:
       - django
+
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: PawsAndCoffee-flower-test
+    env_file: .env
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - celery
+    volumes:
+      - ./:/app
+    command: celery -A pawsAndCoffee flower
+    restart: always

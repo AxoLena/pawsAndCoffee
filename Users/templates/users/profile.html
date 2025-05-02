@@ -12,84 +12,43 @@
     <div class="my-container mt-3 overflow-y-scroll" style="width: 820px; left: 47%; height:600px;">
         <h3 class="txt-headline text-center pt-5">Ваш профиль</h3>
         <div class="d-flex justify-content-center pt-4 txt-content">
-            {% for u in user %}
-                <div class="col-md-10">
-                    <div class="tabs justify-content-center">
-                        <span class="tab mainInf active txt-headline"><a style="letter-spacing: .05rem">данные профиля</a></span>
-                        <span class="tab visits txt-headline"><a style="letter-spacing: .05rem">История посещений</a></span>
-                        <span class="tab guardianship txt-headline"><a style="letter-spacing: .05rem">Опекунство</a></span>
-                        <span class="tab bonuses txt-headline"><a style="letter-spacing: .05rem">Бонусы</a></span>
-                    </div>
-                    <div class="content">
-                        <div class="mainInf-cont cont">
-                            <div class="row justify-content-center pt-4 txt-content">
-                                <div class="col-md-5">
-                                    <label class="mb-2 mx-3 form-label">Имя</label>
-                                    <div class="px-3 form-control mb-3">{{ u.username }}</div>
-                                    <label class="mb-2 mx-3 form-label">Почта</label>
-                                    <div class="px-3 form-control mb-3">{{ u.email }}</div>
-                                </div>
-                                <div class="col-md-5">
-                                    <label class="mb-2 mx-3 form-label">Телефон</label>
-                                    <div class="px-3 form-control mb-3">{{ u.phone}}</div>
-                                    <label class="mb-2 mx-3 form-label">День рождения</label>
-                                    <div class="px-3 form-control mb-3">{{ u.birthday }}</div>
-                                </div>
-                                <div class="row justify-content-center col-4 pt-5">
-                                    {% csrf_token %}
-                                        <a class="btn btn-dark btn-block mb-3" href="{% url 'users:change_profile' %}">Изменить профиль</a>
-                                        <button id="id_logout" class="btn btn-dark btn-block">Выйти</button>
-                                </div>
+            <div class="col-md-10">
+                <div class="tabs justify-content-center">
+                    <span class="tab mainInf active txt-headline"><a style="letter-spacing: .05rem">данные профиля</a></span>
+                    <span class="tab visits txt-headline"><a style="letter-spacing: .05rem">История посещений</a></span>
+                    <span class="tab guardianship txt-headline"><a style="letter-spacing: .05rem">Опекунство</a></span>
+                    <span class="tab bonuses txt-headline"><a style="letter-spacing: .05rem">Бонусы</a></span>
+                </div>
+                <div class="content">
+                    <div class="mainInf-cont cont">
+                        <div class="row justify-content-center pt-4 txt-content">
+                            <div class="col-md-5">
+                                <label class="mb-2 mx-3 form-label">Имя</label>
+                                <div class="px-3 form-control mb-3">{{ user.username }}</div>
+                                <label class="mb-2 mx-3 form-label">Почта</label>
+                                <div class="px-3 form-control mb-3">{{ user.email }}</div>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="mb-2 mx-3 form-label">Телефон</label>
+                                <div class="px-3 form-control mb-3">{{ user.phone}}</div>
+                                <label class="mb-2 mx-3 form-label">День рождения</label>
+                                <div class="px-3 form-control mb-3">{{ user.birthday }}</div>
+                            </div>
+                            <div class="row justify-content-center col-4 pt-5">
+                                {% csrf_token %}
+                                    <a class="btn btn-dark btn-block mb-3" href="{% url 'users:change_profile' %}">Изменить профиль</a>
+                                    <button id="id_logout" class="btn btn-dark btn-block">Выйти</button>
                             </div>
                         </div>
-                        <div class="visits-cont cont">
-                            {% if u.booking%}
-                                <div class="txt-content pt-1 d-flex flex-column justify-content-start">
-                                    <h4 class="text-center txt-headline fs-5">Ближайшие записи:</h4>
-                                    <div class="d-flex flex-column pt-2 booking-near">
-                                        {% for b in u.booking %}
-                                                <ul class="list-group booking-near pb-2">
-                                                    {% if not b.is_inactive %}
-                                                        <li class="list-img list-item txt-content row">
-                                                            <div class="booking-container mx-2 pl-4 py-1 col-9">
-                                                                <div class="row">
-                                                                    <div class="col-5">Дата:
-                                                                        <span class="txt-headline mx-1 fs-7">{{ b.date }}</span>
-                                                                    </div>
-                                                                    <div class="col-7">Время:
-                                                                        <span class="txt-headline mx-1 fs-7">{{ b.time }}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div>Адресс:
-                                                                    <span class="txt-headline mx-1 fs-7">
-                                                                        {{ b.address.city }}, {{ b.address.street }} {{ b.address.house_number }}</span>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-6">Количество человек:
-                                                                        <span class="txt-headline mx-1 fs-7">{{ b.quantity}}</span>
-                                                                    </div>
-                                                                    <div class="col-6">Статус оплаты:
-                                                                        <span class="txt-headline mx-1 fs-7">{{ b.is_paid }}</span>
-                                                                    </div>
-                                                                </div>
-                                                                <div>Дата оформления:
-                                                                    <span class="txt-headline mx-1 fs-7">{{ b.created_timestamp }}</span>
-                                                                </div>
-                                                            </div>
-                                                            <div class="align-self-center col-2">
-                                                                <button id="{{ b.id }}" type="button" class="btn_modal btn btn-dark btn-block px-3 py-2" data-bs-toggle="modal"
-                                                                        data-bs-target="#modal_del_booking">Отменить посещение</button>
-                                                            </div>
-                                                        </li>
-                                                    {% endif %}
-                                                </ul>
-                                        {% endfor %}
-                                    </div>
-                                    <h4 class="text-center txt-headline fs-5">Старые записи:</h4>
-                                    <div class="d-flex flex-column pt-2 booking-history">
-                                        {% for b in u.booking %}
-                                            <ul class="list-group booking-history">
-                                                {% if b.is_inactive %}
+                    </div>
+                    <div class="visits-cont cont">
+                        {% if user.booking%}
+                            <div class="txt-content pt-1 d-flex flex-column justify-content-start">
+                                <h4 class="text-center txt-headline fs-5">Ближайшие записи:</h4>
+                                <div class="d-flex flex-column pt-2 booking-near">
+                                    {% for b in user.booking %}
+                                            <ul class="list-group booking-near pb-2">
+                                                {% if not b.is_inactive %}
                                                     <li class="list-img list-item txt-content row">
                                                         <div class="booking-container mx-2 pl-4 py-1 col-9">
                                                             <div class="row">
@@ -116,123 +75,162 @@
                                                                 <span class="txt-headline mx-1 fs-7">{{ b.created_timestamp }}</span>
                                                             </div>
                                                         </div>
+                                                        <div class="align-self-center col-2">
+                                                            <button id="{{ b.id }}" type="button" class="btn_modal btn btn-dark btn-block px-3 py-2" data-bs-toggle="modal"
+                                                                    data-bs-target="#modal_del_booking">Отменить посещение</button>
+                                                        </div>
                                                     </li>
                                                 {% endif %}
                                             </ul>
+                                    {% endfor %}
+                                </div>
+                                <h4 class="text-center txt-headline fs-5">Старые записи:</h4>
+                                <div class="d-flex flex-column pt-2 booking-history">
+                                    {% for b in user.booking %}
+                                        <ul class="list-group booking-history">
+                                            {% if b.is_inactive %}
+                                                <li class="list-img list-item txt-content row">
+                                                    <div class="booking-container mx-2 pl-4 py-1 col-9">
+                                                        <div class="row">
+                                                            <div class="col-5">Дата:
+                                                                <span class="txt-headline mx-1 fs-7">{{ b.date }}</span>
+                                                            </div>
+                                                            <div class="col-7">Время:
+                                                                <span class="txt-headline mx-1 fs-7">{{ b.time }}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div>Адресс:
+                                                            <span class="txt-headline mx-1 fs-7">
+                                                                {{ b.address.city }}, {{ b.address.street }} {{ b.address.house_number }}</span>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-6">Количество человек:
+                                                                <span class="txt-headline mx-1 fs-7">{{ b.quantity}}</span>
+                                                            </div>
+                                                            <div class="col-6">Статус оплаты:
+                                                                <span class="txt-headline mx-1 fs-7">{{ b.is_paid }}</span>
+                                                            </div>
+                                                        </div>
+                                                        <div>Дата оформления:
+                                                            <span class="txt-headline mx-1 fs-7">{{ b.created_timestamp }}</span>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="txt-content pt-1 d-flex flex-column align-items-center">
+                                <h4 class="px-3 pb-2 fs-6">Вы к нам еще не приходили :(</h4>
+                                <img src="{% static 'gifs/crying-cat.gif' %}" alt="crying cat" class="crying-gif mb-3">
+                                <a class="btn btn-dark btn-block " href="{% url 'booking:schedule' %}">Исправим?</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="guardianship-cont cont txt-content">
+                        {% if user.guardianship %}
+                            <div class="txt-content pt-1 d-flex flex-column justify-content-start">
+                                {% for g in user.guardianship %}
+                                    <h4 class="text-center txt-headline fs-5">Ваши котики</h4>
+                                    <div class="d-flex flex-column pt-3">
+                                        <ul class="list-group">
+                                            <li class="list-img list-item txt-content row">
+                                                <div class="guardian-container mx-2 pl-4 py-1 col-8">
+                                                    <div class="row">
+                                                        <div class="col-5">Кличка:
+                                                            <a class="txt-headline mx-1" href="{% url 'cats:our_cats' %}">{{ g.cat_name}}</a>
+                                                        </div>
+                                                        <div class="col-7">Сумма подписки:
+                                                            <a class="txt-headline mx-1 fs-7">{{ g.amount_of_money }}</a><span>₽</span>
+                                                        </div>
+                                                    </div>
+                                                    <div>Дата оформления подписки:
+                                                        <span class="txt-headline mx-1 fs-7">{{ g.created_timestamp }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="align-self-center col-3">
+                                                    <button id="{{ g.id }}" class="btn_modal btn btn-dark btn-block" type="button" data-bs-toggle="modal" data-bs-target="#modal_del_sub">
+                                                        Отменить подписку</button>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="txt-content pt-1 d-flex flex-column align-items-center">
+                                <h4 class="px-3 pb-2 fs-6">Вы не опекаете еще ни одного котика :(</h4>
+                                <img src="{% static 'gifs/cat_crying_2.gif' %}" alt="crying cat" class="crying-gif mb-3">
+                                <a class="btn btn-dark btn-block" href="{% url 'cats:guardianship' %}">Помочь котикам?</a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    <div class="bonuses-cont cont txt-content">
+                        <div class="d-flex pt-4">
+                            <div class="coins-block mx-5">
+                                <div>
+                                    <img src="{% static 'images/catCoin.png' %}" class="img-coins z-2">
+                                </div>
+                                <div class="mx-2">
+                                    <div class="px-3 coins">{{ user.coins.count }}</div>
+                                </div>
+                            </div>
+                            <div class="coins-label z-2">
+                                <span class="txt-headline">Мяу</span>коины — бонусная валюта, которую можно получить
+                                <span class="text-wavy">при оплате заказов и услуг</span> на нашем сайте.
+                            </div>
+                        </div>
+                        <div class="mt-4 mx-5 text-center history-coins relative-position">
+                            <a class="txt-headline fs-5 history-coins-label">История ваших накоплений</a>
+                                <img class="cursor-img" src="{% static 'images/cursor.png' %}">
+                                <div class="history-coins-block mt-3">
+                                    <div class="d-flex flex-column justify-content-center align-items-center">
+                                        {% for history in user.coins.histories %}
+                                        <div class="history-coins-container col-12 py-4 mt-4">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <div class="col-4">
+                                                    <h5 class="txt-headline txt-select">Дата:</h5>
+                                                    <p>{{ history.created_timestamp }}</p>
+                                                </div>
+                                                <div class="col-5 mx-2">
+                                                    <h5 class="txt-headline txt-select">Описание:</h5>
+                                                    <p>{{ history.description }}</p>
+                                                </div>
+                                                <div class="col-3">
+                                                    <h5 class="txt-headline txt-select">Мяукоины:</h5>
+                                                    {{ history.count }}
+                                                </div>
+                                            </div>
+                                        </div>
                                         {% endfor %}
                                     </div>
                                 </div>
-                            {% else %}
-                                <div class="txt-content pt-1 d-flex flex-column align-items-center">
-                                    <h4 class="px-3 pb-2 fs-6">Вы к нам еще не приходили :(</h4>
-                                    <img src="{% static 'gifs/crying-cat.gif' %}" alt="crying cat" class="crying-gif mb-3">
-                                    <a class="btn btn-dark btn-block " href="{% url 'booking:schedule' %}">Исправим?</a>
-                                </div>
-                            {% endif %}
                         </div>
-                        <div class="guardianship-cont cont txt-content">
-                            {% if u.guardianship %}
-                                <div class="txt-content pt-1 d-flex flex-column justify-content-start">
-                                    {% for g in u.guardianship %}
-                                        <h4 class="text-center txt-headline fs-5">Ваши котики</h4>
-                                        <div class="d-flex flex-column pt-3">
-                                            <ul class="list-group">
-                                                <li class="list-img list-item txt-content row">
-                                                    <div class="guardian-container mx-2 pl-4 py-1 col-8">
-                                                        <div class="row">
-                                                            <div class="col-5">Кличка:
-                                                                <a class="txt-headline mx-1" href="{% url 'cats:our_cats' %}">{{ g.cat_name}}</a>
-                                                            </div>
-                                                            <div class="col-7">Сумма подписки:
-                                                                <a class="txt-headline mx-1 fs-7">{{ g.amount_of_money }}</a><span>₽</span>
-                                                            </div>
-                                                        </div>
-                                                        <div>Дата оформления подписки:
-                                                            <span class="txt-headline mx-1 fs-7">{{ g.created_timestamp }}</span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="align-self-center col-3">
-                                                        <button id="{{ g.id }}" class="btn_modal btn btn-dark btn-block" type="button" data-bs-toggle="modal" data-bs-target="#modal_del_sub">
-                                                            Отменить подписку</button>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% else %}
-                                <div class="txt-content pt-1 d-flex flex-column align-items-center">
-                                    <h4 class="px-3 pb-2 fs-6">Вы не опекаете еще ни одного котика :(</h4>
-                                    <img src="{% static 'gifs/cat_crying_2.gif' %}" alt="crying cat" class="crying-gif mb-3">
-                                    <a class="btn btn-dark btn-block" href="{% url 'cats:guardianship' %}">Помочь котикам?</a>
-                                </div>
-                                {% endif %}
-                            </div>
-                        <div class="bonuses-cont cont txt-content">
-                            <div class="d-flex pt-4">
-                                <div class="coins-block mx-5">
-                                    <div>
-                                        <img src="{% static 'images/catCoin.png' %}" class="img-coins z-2">
-                                    </div>
-                                    <div class="mx-2">
-                                        <div class="px-3 coins">{{ u.coins.count }}</div>
-                                    </div>
-                                </div>
-                                <div class="coins-label z-2">
-                                    <span class="txt-headline">Мяу</span>коины — бонусная валюта, которую можно получить
-                                    <span class="text-wavy">при оплате заказов и услуг</span> на нашем сайте.
-                                </div>
-                            </div>
-                            <div class="mt-4 mx-5 text-center history-coins relative-position">
-                                <a class="txt-headline fs-5 history-coins-label">История ваших накоплений</a>
-                                    <img class="cursor-img" src="{% static 'images/cursor.png' %}">
-                                    <div class="history-coins-block mt-3">
-                                        <div class="d-flex flex-column justify-content-center align-items-center">
-                                            {% for history in u.coins.histories %}
-                                            <div class="history-coins-container col-12 py-4 mt-4">
-                                                <div class="d-flex align-items-center justify-content-center">
-                                                    <div class="col-4">
-                                                        <h5 class="txt-headline txt-select">Дата:</h5>
-                                                        <p>{{ history.created_timestamp }}</p>
-                                                    </div>
-                                                    <div class="col-5 mx-2">
-                                                        <h5 class="txt-headline txt-select">Описание:</h5>
-                                                        <p>{{ history.description }}</p>
-                                                    </div>
-                                                    <div class="col-3">
-                                                        <h5 class="txt-headline txt-select">Мяукоины:</h5>
-                                                        {{ history.count }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% endfor %}
+                        <h4 class="txt-headline fs-4 text-center pt-5">Ваши промокоды и скидки!</h4>
+                        <div class="position-relative my-4">
+                            <button id="left" class="position-absolute arrow-left">
+                                <img src="{% static 'images/arrow.png' %}" width="72px">
+                            </button>
+                            <div class="container-cards p-2">
+                                {% for coupon in coupons %}
+                                    <div class="card-discounts css-{{ coupon.code }} txt-content">
+                                        <div class="img">
+                                            <p>{{ coupon.code }}</p>
+                                            <p>{{ coupon.description }}</p>
+                                            <p>-{{ coupon.discount }}%</p>
                                         </div>
                                     </div>
+                                {% endfor %}
                             </div>
-                            <h4 class="txt-headline fs-4 text-center pt-5">Ваши промокоды и скидки!</h4>
-                            <div class="position-relative my-4">
-                                <button id="left" class="position-absolute arrow-left">
-                                    <img src="{% static 'images/arrow.png' %}" width="72px">
-                                </button>
-                                <div class="container-cards p-2">
-                                    {% for coupon in coupons %}
-                                        <div class="card-discounts css-{{ coupon.code }} txt-content">
-                                            <div class="img">
-                                                <p>{{ coupon.code }}</p>
-                                                <p>{{ coupon.description }}</p>
-                                                <p>-{{ coupon.discount }}%</p>
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                                <button id="right" class="position-absolute arrow-right">
-                                    <img src="{% static 'images/arrow.png' %}" width="72px">
-                                </button>
-                            </div>
+                            <button id="right" class="position-absolute arrow-right">
+                                <img src="{% static 'images/arrow.png' %}" width="72px">
+                            </button>
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
     </div>
 </div>

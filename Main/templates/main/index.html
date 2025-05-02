@@ -21,10 +21,10 @@
         {% include 'main/cats.html' %}
     </div>
     <div class="null-block"></div>
-    <div class="block">
+    <div class="container">
         {% include 'main/contacts.html' %}
     </div>
-    <div class="container d-flex flex-column align-items-center justify-content-center pt-5 pb-5">
+    <div class="container d-flex flex-column align-items-center justify-content-center pt-5 mb-5">
         <h2>
             <p class="text-center pt-3 txt-headline txt-select-cat">
                 <img height="100px" src="{% static "/images/heart_contact.png" %}">
@@ -32,7 +32,7 @@
                 <img height="100px" src="{% static "/images/heart_contact.png" %}">
             </p>
         </h2>
-        <div class="col-10 pt-1 bg-pink rounded align-items-center custom-shadow">
+        <div class="col-9 pt-1 bg-pink rounded align-items-center custom-shadow-2">
             <div class="d-flex justify-content-center pt-5">
                 <ul class="txt-content p-3">
                     {% for social,contact in contacts.items %}
@@ -58,4 +58,8 @@
             <a class="text-body" href="https://github.com/AxoLena/pawsAndCoffee">AxoLena</a>
         </div>
     </footer>
+{% endblock %}
+
+{% block add_scripts %}
+    <script src="{% static "js/jq-main.js" %}"></script>
 {% endblock %}

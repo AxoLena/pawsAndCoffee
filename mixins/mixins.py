@@ -1,4 +1,3 @@
-import requests
 from django.core.cache import cache
 from django.test import Client
 from rest_framework import status

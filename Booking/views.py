@@ -25,7 +25,7 @@ class ScheduleView(GetCacheMixin, TemplateView):
         else:
             context['form'] = BookingForm
         inf = self.get_cache_for_context(cache_name=settings.MAIN_INFORMATION_CACHE_NAME,
-                                         url=self.request.build_absolute_uri(reverse('main:information')), time=60*60)
+                                         url=(reverse('main:information')), time=60*60)
         context['inf'] = inf
         return context
 

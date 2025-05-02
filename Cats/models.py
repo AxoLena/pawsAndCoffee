@@ -4,7 +4,6 @@ from django.db.models import Q
 
 from Users.models import CustomUser
 from Payment.models import ProductStripe, PriceStripe, CheckoutSessionStripe
-from Cats.tasks import create_product
 
 
 class Cats(models.Model):
@@ -30,8 +29,10 @@ class Cats(models.Model):
         product_is_exists = ProductStripe.objects.filter(name=name).exists()
         if not product_is_exists:
             description = f'Подписка на поддержание котика {name}'
-            product = ProductStripe.objects.create(name=name, description=description)
-            create_product.delay(name=name, description=description, id=product.id)
+            try:
+                ProductStripe.objects.create(name=name, description=description)
+            except Exception as e:
+                raise e
         super(Cats, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

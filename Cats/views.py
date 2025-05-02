@@ -30,7 +30,7 @@ class OurCatsView(GetCacheMixin, TemplateView):
 
     def get(self, request, *args, **kwargs):
         cats = self.get_cache_for_context(cache_name=settings.CATS_CACHE_NAME,
-                                          url=request.build_absolute_uri(reverse('cats:cats-list')), time=60 * 60)
+                                          url=reverse('cats:cats-list'), time=60 * 60)
         context = self.get_context_data(**kwargs)
         context['cats'] = cats
         return self.render_to_response(context)

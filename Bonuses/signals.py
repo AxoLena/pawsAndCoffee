@@ -17,5 +17,6 @@ def invalidate_cache_on_save(sender, instance, **kwargs):
 
 
 @receiver(post_save, sender=Coin)
-def invalidate_cache_on_save(sender, instance, **kwargs):
-    cache.delete(settings.USER_PROFILE_CACHE_NAME)
+def invalidate_cache_on_save(sender, instance, created, **kwargs):
+    if not created:
+        cache.delete(f'user_profile_cache_{instance.customuser.id}')
