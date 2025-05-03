@@ -34,9 +34,9 @@ class IndexView(GetCacheMixin, TemplateView):
                                          url=reverse('main:information'), time=60*60)
         context = self.get_context_data(**kwargs)
         context['contacts'] = {
-            'github': 'https://github.com/AxoLena',
-            'telegram': '@hiiirch',
-            'email': 'alena.sukhar333@gmail.com'
+            'github': ('AxoLena', 'https://github.com/AxoLena'),
+            'telegram': ('@hiiirch', 'https://t.me/hiiirch'),
+            'email': ('alena.sukhar333@gmail.com', 'mailto:alena.sukhar333@gmail.com')
         }
         context['cats'] = cats
         context['information'] = inf

@@ -1,11 +1,11 @@
 import json
 
 from django.conf import settings
+from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView
 from rest_framework import generics, views, status
 from rest_framework.response import Response
 
@@ -20,20 +20,19 @@ class CatsListAPIView(generics.ListAPIView):
     serializer_class = CatsSerializer
 
 
-class OurCatsView(GetCacheMixin, TemplateView):
-    template_name = 'cats/our_cats.html'
+class OurCatsView(GetCacheMixin, View):
+    context = {
+        'title': 'Наши коты'
+    }
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = 'Наши коты'
-        return context
-
-    def get(self, request, *args, **kwargs):
-        cats = self.get_cache_for_context(cache_name=settings.CATS_CACHE_NAME,
-                                          url=reverse('cats:cats-list'), time=60 * 60)
-        context = self.get_context_data(**kwargs)
-        context['cats'] = cats
-        return self.render_to_response(context)
+    def get(self, request):
+        cats = self.get_cache_for_context(cache_name=settings.CATS_CACHE_NAME, url=reverse('cats:cats-list'),
+                                          time=60 * 60)
+        paginator = Paginator(cats, 2)
+        page = request.GET.get('page', 1)
+        page_obj = paginator.get_page(int(page))
+        self.context['cats'] = page_obj
+        return render(request, 'cats/our_cats.html', self.context)
 
 
 class AdopAPIView(views.APIView):

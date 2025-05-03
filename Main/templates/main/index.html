@@ -24,34 +24,8 @@
     <div class="container">
         {% include 'main/contacts.html' %}
     </div>
-    <div class="container d-flex flex-column align-items-center justify-content-center pt-5 mb-5">
-        <h2>
-            <p class="text-center pt-3 txt-headline txt-select-cat">
-                <img height="100px" src="{% static "/images/heart_contact.png" %}">
-                А вот и мои настоящие контакты!
-                <img height="100px" src="{% static "/images/heart_contact.png" %}">
-            </p>
-        </h2>
-        <div class="col-9 pt-1 bg-pink rounded align-items-center custom-shadow-2">
-            <div class="d-flex justify-content-center pt-5">
-                <ul class="txt-content p-3">
-                    {% for social,contact in contacts.items %}
-                        <li class="list-img-contact list-item-contact">
-                            <div class="row">
-                                <div class="col">
-                                    <p class="form-control contact d-flex justify-content-between">
-                                        <span class="pe-3">{{contact}}</span>
-                                        <button class="copy-btn ml-auto">
-                                            <img width="20px" src="{% static '/icons/copy.svg' %}">
-                                        </button>
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
+    <div>
+        {% include 'main/my_contacts.html' %}
     </div>
     <footer class="bg-body-tertiary text-center txt-headline text-lg-start">
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">

@@ -29,3 +29,47 @@
 .cat-name-img{
     height: 1.3rem;
 }
+
+
+
+.custom-pagination {
+    width: 100%;
+    padding: 0 1rem;
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.custom-page-item {
+    color: #442d25;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-right: 0.25rem;
+    display: inline-flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-page-item:hover {
+    text-decoration: none;
+    background-color: #d3b691;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: color 128ms ease-out, background-color 128ms ease-out;
+}
+
+.active.custom-page-item {
+    text-decoration: none;
+    color: #ffff;
+    background-color: #442d25;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: color 128ms ease-out, background-color 128ms ease-out;
+}
+
+.disabled.custom-page-item {
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #ffffff;
+}

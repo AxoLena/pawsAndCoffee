@@ -43,5 +43,38 @@
             {% endfor %}
         </div>
     </div>
+
+    <div class="text-center mb-5">
+        <ul class="custom-pagination">
+            <li class="custom-page-item {% if not cats.has_previous %} disabled {% endif %}">
+                <a class="page-link"
+                   href="{% if cats.has_previous %}?page={{ cats.previous_page_number }}{% else %} # {% endif %}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li>
+                {% for page in cats.paginator.page_range %}
+                    {% if cats.number == page %}
+                        <li class="custom-page-item active">
+                            <span class="page-link">{{ page }}</span>
+                        </li>
+                    {% elif page >= cats.number|add:-2 and page <= cats.number|add:2  %}
+                        <li class="custom-page-item">
+                            <a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor%}
+            </li>
+            <li class="custom-page-item {% if not cats.has_next %} disabled {% endif %}">
+                <a class="page-link"
+                   href="{% if cats.has_next %}?page={{ cats.next_page_number }}{% else %} # {% endif %}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
 </div>
 {% endblock %}
