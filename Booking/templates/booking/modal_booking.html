@@ -21,10 +21,15 @@
                                 {{ form.name }}
                                 <div class="invalid-feedback" style="text-transform: lowercase" id="id_name_feedback"></div>
                             </div>
-                            <div class="mb-4 px-2">
+                            <div class="mb-3 px-2">
                                 <label class="form-label mx-4" for="{{ form.phone.id_for_lable }}">Номер телефона<span class="txt-headline txt-select">*</span></label>
                                 {{ form.phone }}
                                 <div class="invalid-feedback" style="text-transform: lowercase" id="id_phone_feedback"></div>
+                            </div>
+                            <div class="mb-4 px-2">
+                                <label class="form-label mx-4" for="{{ form.email.id_for_lable }}">Эл. почта<span class="txt-headline txt-select">*</span></label>
+                                {{ form.email }}
+                                <div class="invalid-feedback" style="text-transform: lowercase" id="id_email_feedback"></div>
                             </div>
                             <div class="mb-5 px-2">
                                 <label class="form-label mx-4">Промокод</label>

@@ -18,7 +18,7 @@ class UserRegForm(UserCreationForm):
         fields = ['username', 'email', 'phone', 'birthday', 'password', 'password2']
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control inpt', 'placeholder': 'Введите ваш логин'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control inpt', 'placeholder': '(000) 000-0000', 'id': 'id_phone'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control inpt', 'placeholder': '81112223333', 'id': 'id_phone'}),
             'email': forms.EmailInput(attrs={'class': 'form-control inpt', 'placeholder': 'Введите ваш адрес эл. почты'}),
         }
 

@@ -19,7 +19,9 @@
                     <span class="tab guardianship txt-headline"><a style="letter-spacing: .05rem">Опекунство</a></span>
                     <span class="tab bonuses txt-headline"><a style="letter-spacing: .05rem">Бонусы</a></span>
                 </div>
-                <div class="content">
+                <div>{{ users }}</div>
+                {% for user in users %}
+                    <div class="content">
                     <div class="mainInf-cont cont">
                         <div class="row justify-content-center pt-4 txt-content">
                             <div class="col-md-5">
@@ -230,6 +232,7 @@
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
         </div>
     </div>

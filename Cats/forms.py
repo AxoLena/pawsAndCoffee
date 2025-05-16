@@ -13,7 +13,7 @@ class AdoptForm(forms.ModelForm):
         fields = ['name', 'phone', 'email', 'social', 'cat_name', 'why_this_cat', 'children', 'has_pet', 'pets']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите ваше имя'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '(000) 000-0000', 'id': 'id_phone'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '81112223333', 'id': 'id_phone'}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Введите ваш адрес электронной почты'}),
             'social': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Оставьте здесь ссылку на вашу страницу'}),
             'cat_name': forms.Select(attrs={'class': "form-select"}),

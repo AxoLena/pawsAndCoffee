@@ -5,7 +5,7 @@ from Cats.models import Cats, FormForGuardianship, FormForGive, FormForAdopt
 
 @admin.register(Cats)
 class CatAdmin(admin.ModelAdmin):
-    list_display = ['name', 'birthday', 'gender', 'breed']
+    list_display = ['name', 'birthday', 'gender', 'breed', 'id']
     search_fields = ['gender']
 
 

@@ -6,8 +6,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from djoser.email import BaseDjoserEmail
-from rest_framework import viewsets
+from rest_framework import viewsets, views, status
 from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from Users.forms import UserLoginForm, UserChangeProfileForm, UserRegForm, UserResetForm, UserSetPasswordForm
 from Users.serializers import UserProfileSerializer
@@ -99,8 +100,7 @@ class UserProfileView(LoginRequiredMixin, GetCacheMixin, GetAuthTokenMixin, View
         user_pk = request.user.pk
 
         user = self.get_cache_for_context(cache_name=f'user_profile_cache_{user_pk}',
-                                          url=reverse('users:account-detail', kwargs={'pk': user_pk}),
-                                          headers=self.get_auth_token(request), time=60 * 60)
+                                          url=reverse('users:account'), time=1)
         coupons = self.get_cache_for_context(cache_name=settings.COUPONS_CACHE_NAME,
                                              url=(reverse('bonuses:coupon-list')), time=60 * 60)
         self.context['user'] = user
@@ -112,6 +112,9 @@ class UserChangeProfileView(LoginRequiredMixin, View):
     context = {
         'title': 'Изменить профиль'
     }
+
+    def is_ajax(self):
+        return self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
     def get(self, request):
         user = request.user
@@ -130,10 +133,12 @@ class UserUpdateInfAboutPaymentsView(View):
                 for data in booking:
                     if data.is_paid:
                         data.user = user
+                        data.save()
             if guardianship:
                 for data in guardianship:
                     if data.is_paid:
                         data.user = user
+                        data.save()
             return redirect(reverse('users:profile'))
         else:
             messages.warning(request, 'На сервере произошла ошибка!\n Попробуйте авторизоваться еще раз')
@@ -158,3 +163,20 @@ class UserAccountViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'], permission_classes=[IsAdminOrAuthenticatedReadOnly])
     def get_queryset(self):
         return CustomUser.objects.filter(id=self.kwargs['pk'])
+
+
+class UserAccountAPIView(views.APIView):
+
+    def get(self, request):
+        user_id = request.user.pk
+        print(request.user)
+        print(request)
+        queryset = CustomUser.objects.filter(id=user_id)
+        return Response(UserProfileSerializer(queryset, many=True).data)
+
+    def put(self, request):
+        serializer = UserProfileSerializer(data=request)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -10,7 +10,7 @@ $(document).ready(function () {
     const months = ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"];
 
     const calendar = () => {
-        var firstdayweek = new Date(year, month, 1).getDay();
+        var firstdayweek = new Date(year, month, 0).getDay();
         var lastdate = new Date(year, month + 1, 0).getDate();
         var lit = "";
 
@@ -44,6 +44,7 @@ $(document).ready(function () {
     var last_select_day = null;
     var last_el = null;
     var select_time = null;
+    var dt = new Date();
     days_click.forEach( el => {
         el.addEventListener('click', () =>{
             var select_day = el.textContent;
@@ -70,16 +71,40 @@ $(document).ready(function () {
                         $('#no_selected').hide();
                         if(response.length > 0){
                              for(var i=0; i<response.length;i++){
-                                $('#choice_times').append(`
-                                <div class='my-4 d-flex justify-content-center align-items-center col' id='time_${select_day}'>
-                                    <div class="time-item py-3 px-5 d-flex flex-column align-items-center txt-content">
-                                        <p>Время: <span class="txt-headline fs-5">${response[i].time}</span></p>
-                                        <p>Оставшихся мест: <span class="txt-headline fs-5">${response[i].number_of_places}</span></p>
-                                        <button type="button" id="${i}" class="btn_model btn btn-dark btn-block" data-bs-toggle="modal"
-                                        data-bs-target="#modal_booking">Записаться</button>
-                                    </div>
-                                </div>`);
-                            }
+                                 if(select_day == Number(dt.getDate())){
+                                     if(Number(response[i].time.split(":")[0]) > dt.getHours()){
+                                        $('#choice_times').append(`
+                                        <div class='my-4 d-flex justify-content-center align-items-center col' id='time_${select_day}'>
+                                            <div class="time-item py-3 px-5 d-flex flex-column align-items-center txt-content">
+                                                <p>Время: <span class="txt-headline fs-5">${response[i].time}</span></p>
+                                                <p>Оставшихся мест: <span class="txt-headline fs-5">${response[i].number_of_places}</span></p>
+                                                <button type="button" id="${i}" class="btn_model btn btn-dark btn-block" data-bs-toggle="modal"
+                                                data-bs-target="#modal_booking">Записаться</button>
+                                            </div>
+                                        </div>`);
+                                     }
+                                     else{
+                                         if($(`#choice_times`).children().length == 0){
+                                             $('#choice_times').append(`
+                                            <div class='py-2 fs-5 col-12 text-center' id='time_${select_day}'>
+                                                <div class=''>К сожалению, на этот день уже нет свободных окошек :(</div>
+                                                <div class="img-sad-cat mb-3"></div>
+                                            </div>`);
+                                         }
+                                     }
+                                 }
+                                 else{
+                                     $('#choice_times').append(`
+                                        <div class='my-4 d-flex justify-content-center align-items-center col' id='time_${select_day}'>
+                                            <div class="time-item py-3 px-5 d-flex flex-column align-items-center txt-content">
+                                                <p>Время: <span class="txt-headline fs-5">${response[i].time}</span></p>
+                                                <p>Оставшихся мест: <span class="txt-headline fs-5">${response[i].number_of_places}</span></p>
+                                                <button type="button" id="${i}" class="btn_model btn btn-dark btn-block" data-bs-toggle="modal"
+                                                data-bs-target="#modal_booking">Записаться</button>
+                                            </div>
+                                        </div>`);
+                                 }
+                             }
                             $('.btn_model').click(function(event) {
                                 event.preventDefault();
                                 $.ajax({
@@ -136,11 +161,11 @@ $(document).ready(function () {
     if ($('.pay_coins').attr('id') !== undefined ){
         user_id = $('.pay_coins').attr('id').split('_')[0];
         $.ajax({
-            url: `../user/api/auth/profile/${user_id}/inf/`,
+            url: `../user/api/auth/profile/inf/${user_id}/`,
             method: 'get',
             dataType: 'json',
             success: function(resp){
-                var coins = resp[0].coins.count;
+                var coins = resp.coins.count;
                 $('#inf_user_coins').append(
                     `<div class="px-3 coins">${coins}</div>`
                 );
@@ -186,6 +211,9 @@ $(document).ready(function () {
             var coin_id = $('.pay_coins').attr('id').split('_')[1];
             formData.append('bonuses', coins);
         }
+        else{
+            formData.append('bonuses', 0);
+        }
         if ($('#id_code').val() != ''){
             $.ajax({
                 url: `../bonus/api/coupon/compare/`,
@@ -195,7 +223,56 @@ $(document).ready(function () {
                 data: formData,
                 success: function(response){
                     var data = response.responseJSON;
-                    formData.append('coupone', response.code);
+                    formData.append('coupon', response.code);
+                    $.ajax({
+                        data: formData,
+                        url: 'api/booking/',
+                        method: 'post',
+                        contentType: false,
+                        processData: false,
+                        success: function(response){
+                            if ($('#id_coins').val() != 0){
+                                if(!$(`#id_coins, #id_code`).hasClass('is-invalid')){
+                                    ($(`#id_coins, #id_code`)).addClass("is-invalid");
+                                    ($(`#id_coins_feedback, #id_code_feedback`)).append(`
+                                    Нельзя использовать промокод и бонусы вместе! выберите что-то одно`);
+                                }
+                            }
+                            else{
+                                setTimeout(function () {
+                                    console.log("Redirecting");
+                                    window.location.href = '../payment/booking/';
+                                }, 1000);
+                            }
+                        },
+                        error: function(data){
+                            var response = data.responseJSON;
+                            console.log('err - ', response);
+                            $("#id_feedback").show();
+                            $.each(fields,function(){
+                                if (response){
+                                    if(this.name in response){
+                                        Object.entries(response).forEach(([key, value]) =>{
+                                            if(!$(`#id_${key}`).hasClass('is-invalid')){
+                                                ($(`#id_${key}`)).addClass("is-invalid");
+                                                ($(`#id_${key}_feedback`)).append(`${value}`);
+                                            }
+                                        });
+                                    }
+                                    else{
+                                        if($(`#id_${this.name}`).hasClass('is-invalid')){
+                                            ($(`#id_${this.name}`)).removeClass("is-invalid");
+                                            ($(`#id_${this.name}`)).addClass("is-valid");
+                                            ($(`#id_${this.name}_feedback`)).empty();
+                                        }
+                                        if(!$(`#id_${this.name}`).hasClass('is-valid')){
+                                            ($(`#id_${this.name}`)).addClass("is-valid");
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
                 },
                 error: function(response){
                     var data = response.responseJSON;
@@ -206,6 +283,10 @@ $(document).ready(function () {
                                 Object.entries(data).forEach(([key, value]) =>{
                                     if(!$(`#id_${key}`).hasClass('is-invalid')){
                                         ($(`#id_${key}`)).addClass("is-invalid");
+                                        ($(`#id_${key}_feedback`)).append(`${value}`);
+                                    }
+                                    else{
+                                        ($(`#id_${this.name}_feedback`)).empty();
                                         ($(`#id_${key}_feedback`)).append(`${value}`);
                                     }
                                 });

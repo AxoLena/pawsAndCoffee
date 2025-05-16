@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from Bonuses.serializers import CouponSerializer
 from Booking.models import Schedule, Booking
 from Cats.serializers import phone_validate, russian_validator
 from Main.models import Address
@@ -28,11 +29,12 @@ class BookingSerializer(serializers.ModelSerializer):
     is_inactive = serializers.SerializerMethodField()
     phone = serializers.CharField(validators=[phone_validate])
     name = serializers.CharField(validators=[russian_validator])
-    coupon = serializers.CharField(source='coupon.code', default=None, required=False)
+    coupon = serializers.CharField(source='coupon.code', required=False)
 
     class Meta:
         model = Booking
         fields = '__all__'
+        read_only_fields = ['user', 'session_key']
         depth = 1
 
     def to_representation(self, instance):
@@ -46,9 +48,13 @@ class BookingSerializer(serializers.ModelSerializer):
         quantity = attrs['quantity']
         coupon = attrs['coupon']
         bonuses = attrs['bonuses']
+        if coupon:
+            coupon_serializer = CouponSerializer(data=coupon)
+            if coupon_serializer.is_valid(raise_exception=True):
+                attrs['coupon'] = coupon_serializer.validated_data
         if ((float(cost) * int(quantity)) - int(bonuses)) < 1:
             raise serializers.ValidationError({'coins': 'Сумма оплаты не должна быть меньше 1 рубля!'})
-        if coupon['code'] and bonuses != 0:
+        if coupon and bonuses != 0:
             raise serializers.ValidationError({
                 'code': 'Невозможно использовать промокод и бонусы вместе, необходимо использовать что-то одно!',
                 'coins': 'Невозможно использовать промокод и бонусы вместе, необходимо использовать что-то одно!',
@@ -72,10 +78,12 @@ class BookingSerializer(serializers.ModelSerializer):
             cost=validated_data['cost'],
             address_id=validated_data['address_id'],
             user=validated_data['user'],
+            session_key=validated_data['session_key'],
             phone=validated_data['phone'],
+            email=validated_data['email'],
             name=validated_data['name'],
-            bonuses=validated_data['bonuses']
-
+            bonuses=validated_data['bonuses'],
+            coupon=validated_data['coupon']
         )
         booking.address = self.address_create(booking)
         return booking

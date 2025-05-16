@@ -56,8 +56,8 @@ class UserRegSerializer(serializers.ModelSerializer):
 class UserProfileSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(validators=[phone_validate])
     birthday = serializers.DateField(validators=[birthday_validate], required=False, default=None, allow_null=True)
-    booking = BookingSerializer(many=True)
-    guardianship = GuardianshipSerializer(many=True)
+    booking = BookingSerializer(many=True, required=False)
+    guardianship = GuardianshipSerializer(many=True, required=False)
     coins = CoinSerializer()
 
     class Meta:

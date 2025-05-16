@@ -92,7 +92,7 @@ $(document).ready(function () {
                 });
             }
             else{
-                u = '../../api/auth/users/me/';
+                u = '../../api/auth/my/profile/';
                 succsessMsgText = `${fields[1].value}, данные профиля были измененны`;
                 method = 'PUT';
                 $('#user_forms :input[name]').each(function() {

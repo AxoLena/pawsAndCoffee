@@ -171,7 +171,8 @@ class GuardianshipAPIView(views.APIView):
 
     def post(self, request):
         serializer = GuardianshipSerializer(data=request.data)
-        request.session.save()
+        if not request.session.session_key:
+            request.session.create()
         if serializer.is_valid():
             if request.user.is_authenticated:
                 serializer.validated_data['user'] = request.user

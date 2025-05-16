@@ -57,12 +57,16 @@ class BookingAPIDelete(generics.DestroyAPIView):
 
 
 class BookingAPIView(views.APIView):
+
     def post(self, request):
         serializer = BookingSerializer(data=request.data)
+        if not request.session.session_key:
+            request.session.create()
         if serializer.is_valid():
             if request.user.is_authenticated:
                 serializer.validated_data['user'] = request.user
                 serializer.validated_data['session_key'] = None
+                serializer.validated_data['birthday'] = request.user.birthday
             else:
                 serializer.validated_data['user'] = None
                 serializer.validated_data['session_key'] = request.session.session_key

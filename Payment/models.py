@@ -49,6 +49,7 @@ class PriceStripe(models.Model):
                 if not PriceStripe.objects.filter(unit_amount=self.unit_amount, interval=self.interval, product=self.product).exists():
                     self.price_id = price.id
                     is_exists = True
+                    break
         if not is_exists:
             try:
                 price = stripe.Price.create(
@@ -56,7 +57,7 @@ class PriceStripe(models.Model):
                     currency=self.currency,
                     recurring={'interval': self.interval},
                     unit_amount=self.format_amount_to_stripe(),
-                    product=self.product.id
+                    product=self.product.product_id
                 )
                 self.price_id = price.id
             except Exception as e:

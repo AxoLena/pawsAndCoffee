@@ -13,7 +13,7 @@ class HistorySerializer(serializers.ModelSerializer):
 
 
 class CoinSerializer(serializers.ModelSerializer):
-    histories = HistorySerializer(many=True)
+    histories = HistorySerializer(many=True, required=False)
 
     class Meta:
         model = Coin
@@ -30,7 +30,7 @@ class CouponSerializer(serializers.ModelSerializer):
 class CouponCompareSerializer(serializers.ModelSerializer):
     phone = serializers.CharField()
     quantity = serializers.IntegerField()
-    birthday = serializers.DateTimeField()
+    birthday = serializers.DateTimeField(required=False, default=None)
 
     class Meta:
         model = Coupon
@@ -47,7 +47,7 @@ class CouponCompareSerializer(serializers.ModelSerializer):
                 if quantity != 2:
                     raise serializers.ValidationError({'code': 'Этот промокод можно использовать только на компанию из двоих человек!'})
             case 'CATINPARTYHAD':
-                if birthday != datetime.date.today():
+                if not birthday or birthday != datetime.date.today():
                     raise serializers.ValidationError({'code': 'Этот промокод можно использовать только в ваш день рождения! '
                                                                'Укажите вашу дату рождения при регистраци, чтобы мы могли подтвердить информацию.'})
             case 'FIRSTMEOW':

@@ -2,54 +2,7 @@
 
 <div class="row">
     <div class="col-md-8 offset-md-2">
-<!--            <div id="carouselCats" class="carousel carousel-dark slide" data-bs-ride="carousel">-->
-<!--                <div class="carousel-indicators">-->
-<!--                    {% with cats|first as cat_first %}-->
-<!--                        {% for cat in cats %}-->
-<!--                            {% if cat.pk != cat_first.pk %}-->
-<!--                                <button type="button" data-bs-target="#carouselCats" data-bs-slide-to="{{ cat.pk }}"-->
-<!--                                        aria-label="Slide {{ cat.pk }}"></button>-->
-<!--                            {% else %}-->
-<!--                                <button type="button" data-bs-target="#carouselCats" data-bs-slide-to="{{cat_first.pk}}"-->
-<!--                                class="active" aria-current="true" aria-label="Slide {{ cat_first.pk }}"></button>-->
-<!--                            {% endif %}-->
-<!--                        {% endfor %}-->
-<!--                    {% endwith %}-->
-<!--                </div>-->
-<!--                <div class="carousel-inner">-->
-<!--                    {% with cats|first as cat_first %}-->
-<!--                        {% for cat in cats %}-->
-<!--                            {% if cat.pk != cat_first.pk %}-->
-<!--                                <div class="carousel-item">-->
-<!--                                    <img src="..." class="d-block w-100" alt="...">-->
-<!--                                    <div class="carousel-caption d-none d-md-block">-->
-<!--                                        <h5>Метка второго слайда</h5>-->
-<!--                                        <p>Некоторый репрезентативный заполнитель для второго слайда.</p>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            {% else %}-->
-<!--                                <div class="carousel-item active">-->
-<!--                                    <img src="{{ cat.image }}" class="d-block w-50" alt="{{ cat.name }}">-->
-<!--                                    <div class="carousel-caption d-none d-md-block" style="background-color: #00000073">-->
-<!--                                        <h5  style="color:#f3e9de">{{ cat.name }}</h5>-->
-<!--                                        <p style="color:#f3e9de">{{ cat.description|truncatechars:200 }}</p>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            {% endif %}-->
-<!--                        {% endfor %}-->
-<!--                    {% endwith %}-->
-<!--                </div>-->
-<!--                <button class="carousel-control-prev" type="button" data-bs-target="#carouselCats" data-bs-slide="prev">-->
-<!--                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>-->
-<!--                    <span class="visually-hidden">Предыдущий</span>-->
-<!--                </button>-->
-<!--                <button class="carousel-control-next" type="button" data-bs-target="#carouselCats" data-bs-slide="next">-->
-<!--                    <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
-<!--                    <span class="visually-hidden">Следующий</span>-->
-<!--                </button>-->
-<!--            </div>-->
-
-        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+        <div id="carouselExampleCaptions" class="carousel carousel-dark slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
                             aria-current="true" aria-label="Slide 0"></button>

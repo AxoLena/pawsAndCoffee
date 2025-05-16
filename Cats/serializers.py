@@ -3,6 +3,7 @@ from datetime import date
 from rest_framework import serializers
 
 from Cats.models import Cats, FormForGuardianship, FormForGive, FormForAdopt
+from Payment.models import ProductStripe
 
 
 def russian_validator(value):
@@ -15,9 +16,11 @@ def russian_validator(value):
 def phone_validate(value):
     if not value.isdigit():
         raise serializers.ValidationError('Номер телефона должен состоять только из цифр')
-    pattern = re.compile(r'^\d{12}$')
+    pattern = re.compile(r'^\d{11}$')
     if not pattern.match(value):
         raise serializers.ValidationError('Неверный формат')
+    if value[0] != '8':
+        raise serializers.ValidationError('Номер телефона должен начинаться с 8....')
 
 
 class CatsSerializer(serializers.ModelSerializer):
@@ -97,12 +100,11 @@ class GuardianshipSerializer(serializers.ModelSerializer):
     name = serializers.CharField(validators=[russian_validator])
     user = serializers.CharField(source='user.id', default=None)
     plan = serializers.CharField(required=False)
-    cat_name = serializers.CharField(source='cat_name.name')
+    cat_name = serializers.PrimaryKeyRelatedField(queryset=ProductStripe.objects.all())
 
     class Meta:
         model = FormForGuardianship
         fields = '__all__'
-        # depth = 1
 
     def create(self, validated_data):
         guardianship = FormForGuardianship.objects.create(

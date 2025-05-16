@@ -27,16 +27,14 @@ class PaymentForGuardianshipView(View):
     }
 
     def get(self, request):
-        if request.user.is_authenticated:
-            self.context['guardian'] = FormForGuardianship.objects.filter(user=request.user)
-            return render(request, 'payment/payment.html', context=self.context)
-        else:
-            self.context['guardian'] = FormForGuardianship.objects.filter(session_key=request.session.session_key)
-            return render(request, 'payment/payment.html', context=self.context)
+        return render(request, 'payment/payment.html', context=self.context)
 
     def post(self, request):
         payment_type = request.POST.get('stripe', 'yookassa')
-        guardian_queryset = self.context['guardian']
+        if request.user.is_authenticated:
+            guardian_queryset = FormForGuardianship.objects.filter(user=request.user)
+        else:
+            guardian_queryset = FormForGuardianship.objects.filter(session_key=request.session.session_key)
         guardian = guardian_queryset.latest('created_timestamp')
         try:
             match payment_type:
@@ -90,19 +88,18 @@ class PaymentForBookingView(View):
     }
 
     def get(self, request):
-        if request.user.is_authenticated:
-            self.context['booking'] = Booking.objects.filter(user=request.user)
-            return render(request, 'payment/payment.html', context=self.context)
-        else:
-            self.context['booking'] = Booking.objects.filter(session_key=request.session.session_key)
-            return render(request, 'payment/payment.html', context=self.context)
+        return render(request, 'payment/payment.html', context=self.context)
 
     def post(self, request):
         payment_type = request.POST.get('stripe', 'yookassa')
-        booking_queryset = self.context['booking']
+        if request.user.is_authenticated:
+            booking_queryset = Booking.objects.filter(user=request.user)
+        else:
+            booking_queryset = Booking.objects.filter(session_key=request.session.session_key)
         booking = booking_queryset.latest('created_timestamp')
         cost = (booking.cost * booking.quantity)
-        cost = cost - booking.bonuses if booking.bonuses > 0 else cost * (booking.coupon.discount / 100)
+        if booking.bonuses or booking.coupon:
+            cost = cost - booking.bonuses if booking.bonuses > 0 else cost * (booking.coupon.discount / 100)
         try:
             match payment_type:
                 case 'stripe':
