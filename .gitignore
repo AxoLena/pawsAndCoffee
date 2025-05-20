@@ -1,0 +1,14 @@
+/venv/
+/media/
+/static/css/boostrap
+/static/css/bootstrap.min.css
+/static/js/jquery
+/static/js/jquery-plugins
+/static/js/bootstrap.bundle.min.js
+/static/rest_framework
+/static/js/jquery.js
+__init__.py
+/.idea/
+dockerignore
+requirements.txt
+.env
