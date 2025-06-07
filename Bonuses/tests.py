@@ -15,6 +15,6 @@ class CouponAPIViewTestCase(APITestCase):
         response = self.client.get(url)
         serializer_data = CouponSerializer(test_coupon).data
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual(serializer_data, response.data)
+        self.assertEqual(serializer_data, response.data[0])
         print(response)
 

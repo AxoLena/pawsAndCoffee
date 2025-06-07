@@ -50,7 +50,6 @@ services:
   celery:
     build:
       context: .
-      dockerfile: Dockerfile
     container_name: PawsAndCoffee-celery-test
     env_file: .env
     depends_on:
@@ -83,7 +82,6 @@ services:
   flower:
     build:
       context: .
-      dockerfile: Dockerfile
     container_name: PawsAndCoffee-flower-test
     env_file: .env
     ports:
@@ -95,3 +93,14 @@ services:
       - ./:/app
     command: celery -A pawsAndCoffee flower
     restart: always
+
+  pytest:
+    build:
+      dockerfile: ./docker/test/Dockerfile
+      context: .
+    container_name: PawsAndCoffee-pytest-test
+    env_file: .test.env
+    depends_on:
+      - celery
+    command: pytest 
+    
