@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from djoser.email import BaseDjoserEmail
+from django.test import Client
 from rest_framework import viewsets, views, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -99,12 +100,12 @@ class UserProfileView(LoginRequiredMixin, GetCacheMixin, GetAuthTokenMixin, View
     def get(self, request, *args, **kwargs):
         user_pk = request.user.pk
 
-        user = self.get_cache_for_context(cache_name=f'user_profile_cache_{user_pk}',
-                                          url=reverse('users:account'), time=1)
-        coupons = self.get_cache_for_context(cache_name=settings.COUPONS_CACHE_NAME,
-                                             url=(reverse('bonuses:coupon-list')), time=60 * 60)
-        self.context['user'] = user
-        self.context['coupons'] = coupons
+        # user = self.get_cache_for_context(cache_name=f'user_profile_cache_{user_pk}',
+        #                                   url=reverse('users:account'), time=1, request=request)
+        # coupons = self.get_cache_for_context(cache_name=settings.COUPONS_CACHE_NAME,
+        #                                      url=(reverse('bonuses:coupon-list')), time=60 * 60)
+        # self.context['user'] = user
+        # self.context['coupons'] = coupons
         return render(request, 'users/profile.html', context=self.context)
 
 
@@ -157,22 +158,12 @@ class UserLogoutView(View):
         return HttpResponse(status=500)
 
 
-class UserAccountViewSet(viewsets.ModelViewSet):
-    serializer_class = UserProfileSerializer
-
-    @action(detail=True, methods=['get'], permission_classes=[IsAdminOrAuthenticatedReadOnly])
-    def get_queryset(self):
-        return CustomUser.objects.filter(id=self.kwargs['pk'])
-
-
 class UserAccountAPIView(views.APIView):
 
     def get(self, request):
         user_id = request.user.pk
-        print(request.user)
-        print(request)
-        queryset = CustomUser.objects.filter(id=user_id)
-        return Response(UserProfileSerializer(queryset, many=True).data)
+        data = CustomUser.objects.get(id=user_id)
+        return Response(UserProfileSerializer(data).data)
 
     def put(self, request):
         serializer = UserProfileSerializer(data=request)

@@ -14,14 +14,16 @@ class GetAuthTokenMixin:
 
 
 class GetCacheMixin:
-    def get_cache_for_context(self, cache_name, url, time, headers=None):
+    def get_cache_for_context(self, cache_name, url, time, headers=None, request = None):
+        if request:
+            print(request.user)
         cache_list = cache.get(cache_name)
         if cache_list:
             return cache_list
         else:
             client = Client()
             url = url
-            response = client.get(url, headers)
+            response = client.get(url, headers, request)
             data = response.json()
             cache.set(cache_name, data, time)
             return data

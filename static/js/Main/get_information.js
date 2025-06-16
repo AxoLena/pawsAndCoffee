@@ -1,6 +1,11 @@
 $(document).ready(function () {
+    var currentUrl = $(location).attr('href');
+    var url =
+			currentUrl.indexOf('calendar') != -1
+				? '../api/information/'
+				: 'api/information/'
 	$.ajax({
-		url: 'api/information/',
+		url: url,
 		type: 'GET',
 		dataType: 'json',
 		xhrFields: {
@@ -11,25 +16,25 @@ $(document).ready(function () {
 			'X-CSRFToken': '{{ csrf_token }}',
 		},
 		success: function (data) {
-            console.log(data[0]);
+            console.log('Data was load successfully!');
             $('span[name=count_of_cats]').append(
 							`${data[0].count_of_cats} котиков`
-						)
-			$('span[name=working_hours]').append(data[0].working_hours)
+						);
+			$('span[name=working_hours]').append(data[0].working_hours);
             if (data[0].duration_of_the_visit == 1){
-                $('span[name=duration_of_the_visit]').append(`${data[0].duration_of_the_visit} час`)
+                $('span[name=duration_of_the_visit]').append(`${data[0].duration_of_the_visit} час`);
             }
             else{
-                $('span[name=duration_of_the_visit]').append(`${data[0].duration_of_the_visit} часа`)
+                $('span[name=duration_of_the_visit]').append(`${data[0].duration_of_the_visit} часа`);
             }
-            $('span[name=cost]').append(`${data[0].cost} ₽`)
-            $('span[name=phone]').append(data[0].phone)
+            $('span[name=cost]').append(`${data[0].cost} ₽`);
+            $('span[name=phone]').append(data[0].phone);
             $('span[name=address]').append(
 							`${data[0].address.city}, ${data[0].address.street}, ${data[0].address.house_number}`
-						)
+						);
 		},
 		error: function (data) {
-			console.log('err')
+			console.error('Failed to get data:', data);
 		},
 	})
-})
+});

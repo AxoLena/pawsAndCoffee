@@ -3,50 +3,18 @@
 <div class="row">
     <div class="col-md-8 offset-md-2">
         <div id="carouselExampleCaptions" class="carousel carousel-dark slide" data-bs-ride="carousel">
-            <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
-                            aria-current="true" aria-label="Slide 0"></button>
-                {% with without_first_cat=cats|slice:"1:" %}
-                    {% for cat in without_first_cat %}
-                        <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="{{ forloop.counter }}"
-                                aria-label="Slide {{ forloop.counter }}"></button>
-                    {% endfor %}
-                {% endwith %}
+            <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-indicators" id="carousel-indicators"></div>
+                <div class="carousel-inner" id="carousel-inner"></div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Предыдущий</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Следующий</span>
+                </button>
             </div>
-            <div class="carousel-inner">
-                {% with first_cat=cats|first %}
-                    <div class="carousel-item active">
-                        <div class="d-flex justify-content-center align-items-center">
-                            <img src="{{ first_cat.image }}" class="custom-carousel-image" alt="{{ first_cat.name }}">
-                        </div>
-                        <div class="carousel-caption d-none d-md-block" style="background-color: #00000073">
-                            <h5  style="color:#f3e9de">{{ first_cat.name }}</h5>
-                            <p style="color:#f3e9de">{{ first_cat.description|truncatechars:200 }}</p>
-                        </div>
-                    </div>
-                {% endwith %}
-                {% with without_first_cat=cats|slice:"1:" %}
-                    {% for cat in without_first_cat %}
-                        <div class="carousel-item">
-                            <div class="d-flex justify-content-center align-items-center">
-                                <img src="{{ cat.image }}" class="custom-carousel-image" alt="{{ cat.name }}">
-                            </div>
-                            <div class="carousel-caption d-none d-md-block" style="background-color: #00000073">
-                                <h5  style="color:#f3e9de">{{ cat.name }}</h5>
-                                <p style="color:#f3e9de">{{ cat.description|truncatechars:200 }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% endwith %}
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"  data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Предыдущий</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"  data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Следующий</span>
-            </button>
         </div>
     </div>
 </div>

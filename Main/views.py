@@ -6,7 +6,6 @@ from rest_framework import generics
 
 from Main.models import InfAboutCafe, Address
 from Main.serializers import InfAboutCafeSerializer, AddressSerializer
-from mixins.mixins import GetCacheMixin
 
 
 class AddressListAPIView(generics.ListAPIView):
@@ -19,7 +18,7 @@ class InfAboutCafeViewSet(generics.ListAPIView):
     serializer_class = InfAboutCafeSerializer
 
 
-class IndexView(GetCacheMixin, TemplateView):
+class IndexView(TemplateView):
     template_name = 'main/index.html'
 
     def get_context_data(self, **kwargs):
@@ -28,16 +27,10 @@ class IndexView(GetCacheMixin, TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        cats = self.get_cache_for_context(cache_name=settings.CATS_CACHE_NAME,
-                                          url=reverse('cats:cats-list'), time=60*60)
-        inf = self.get_cache_for_context(cache_name=settings.MAIN_INFORMATION_CACHE_NAME,
-                                         url=reverse('main:information'), time=60*60)
         context = self.get_context_data(**kwargs)
         context['contacts'] = {
             'github': ('AxoLena', 'https://github.com/AxoLena'),
             'telegram': ('@hiiirch', 'https://t.me/hiiirch'),
             'email': ('alena.sukhar333@gmail.com', 'mailto:alena.sukhar333@gmail.com')
         }
-        context['cats'] = cats
-        context['information'] = inf
         return self.render_to_response(context)

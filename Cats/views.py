@@ -12,7 +12,6 @@ from rest_framework.response import Response
 from Cats.forms import AdoptForm, GiveForm, GuardianshipForm
 from Cats.models import Cats, FormForGuardianship, FormForAdopt, FormForGive
 from Cats.serializers import CatsSerializer, GuardianshipSerializer, AdoptSerializer, GiveSerializer
-from mixins.mixins import GetCacheMixin
 
 
 class CatsListAPIView(generics.ListAPIView):
@@ -20,14 +19,13 @@ class CatsListAPIView(generics.ListAPIView):
     serializer_class = CatsSerializer
 
 
-class OurCatsView(GetCacheMixin, View):
+class OurCatsView(View):
     context = {
         'title': 'Наши коты'
     }
 
     def get(self, request):
-        cats = self.get_cache_for_context(cache_name=settings.CATS_CACHE_NAME, url=reverse('cats:cats-list'),
-                                          time=60 * 60)
+        cats = Cats.objects.all()
         paginator = Paginator(cats, 2)
         page = request.GET.get('page', 1)
         page_obj = paginator.get_page(int(page))

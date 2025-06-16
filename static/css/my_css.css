@@ -31,18 +31,19 @@
 .bg-start-block{
     background-image: url("../images/bg.png");
     background-position-x: center;
-    background-size: 1400pt 115vh;
+    /* background-size: 1400pt 115vh; */
+    background-size: 110%;
     background-repeat: no-repeat;
 }
 
 .block{
     width: 100%;
-    height: 85.7vh;
+    /* height: 85.7vh; */
 }
 
 .block-main{
     width: 100%;
-    height: 125.7vh;
+    height: 80%;
 }
 
 .null-block{

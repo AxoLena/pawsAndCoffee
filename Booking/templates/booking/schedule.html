@@ -6,13 +6,11 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container pt-4">
     <h2 class="text-center txt-headline my-5">Запись на <span class="calendar-current-date"></span></h2>
-    {% for i in inf %}
     <h3 class="text-center txt-content fs-5 pb-3">Стоимость <span class="fs-3 txt-headline txt-select">часа</span>
         посещения для <span class="fs-3 txt-headline txt-select">одного</span> человека составляет
-        <span class="fs-3 txt-headline txt-select">{{ i.cost }}₽</span>!</h3>
-    {% endfor %}
+        <span class="fs-3 txt-headline txt-select" name="cost"></span>!</h3>
     <div class="container pt-4 pb-5">
         <div class="row">
             <div class="col-6 d-flex justify-content-center">
@@ -56,5 +54,7 @@
 {% endblock %}
 
 {% block add_scripts %}
-    <script src="{% static "js/jq-calendar.js" %}"></script>
+    <script src="{% static "js/Main/get_information.js" %}"></script>
+    <script src="{% static "js/Booking/calendar.js" %}"></script>
+    <script src="{% static "js/Booking/form.js" %}"></script>
 {% endblock %}

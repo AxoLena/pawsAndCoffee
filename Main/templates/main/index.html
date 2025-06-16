@@ -6,26 +6,27 @@
 {% endblock %}
 
 {% block content %}
-    <div class="block bg-start-block">
-        <h1 class="txt-headline text-center py-5 fs-1">Вам нравятся коты?</h1>
-        <h2 class="txt-headline text-center fs-3 pb-4">Тогда приходите к нам!</h2>
-        <h2 class="txt-headline text-center fs-3 pb-4" style="margin-top:300px;">Лапки&Кофе</h2>
-        <h2 class="text-center font-Bosk" style="margin-top: -1.4rem">
-            <a class="btn btn-primary btn-bg-color fs-3 pb-3 px-5" href="{% url 'booking:schedule' %}">Записаться</a>
-        </h2>
-    </div>
-    <div class="block-main pt-5">
-        {% include 'main/about.html' %}
-    </div>
-    <div class="block pt-5">
-        {% include 'main/cats.html' %}
-    </div>
-    <div class="null-block"></div>
-    <div class="container">
-        {% include 'main/contacts.html' %}
-    </div>
-    <div>
-        {% include 'main/my_contacts.html' %}
+    <div class="d-flex flex-column">
+        <div class="block bg-start-block pb-5">
+            <h1 class="txt-headline text-center py-5 fs-1">Вам нравятся коты?</h1>
+            <h2 class="txt-headline text-center fs-3 pb-4">Тогда приходите к нам!</h2>
+            <h2 class="txt-headline text-center fs-3 pb-4" style="margin-top:300px;">Лапки&Кофе</h2>
+            <h2 class="text-center font-Bosk" style="margin-top: -1.4rem">
+                <a class="btn btn-primary btn-bg-color fs-3 pb-3 px-5" href="{% url 'booking:schedule' %}">Записаться</a>
+            </h2>
+        </div>
+        <div class="block-main pt-5">
+            {% include 'main/about.html' %}
+        </div>
+        <div class="block pt-5">
+            {% include 'main/cats.html' %}
+        </div>
+        <div class="container pt-5">
+            {% include 'main/contacts.html' %}
+        </div>
+        <div>
+            {% include 'main/my_contacts.html' %}
+        </div>
     </div>
     <footer class="bg-body-tertiary text-center txt-headline text-lg-start">
         <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
@@ -35,5 +36,7 @@
 {% endblock %}
 
 {% block add_scripts %}
-    <script src="{% static "js/jq-main.js" %}"></script>
+    <script src="{% static "js/Main/my_contacts.js" %}"></script>
+    <script src="{% static "js/Main/get_information.js" %}"></script>
+    <script src="{% static "js/Main/cats_slides_carousel.js" %}"></script>
 {% endblock %}

@@ -5,45 +5,42 @@
 {% endblock %}
 
 <div class="container">
-    {% for inf in information %}
-        <div class="d-flex justify-content-around">
-            <div class="px-5 w-50">
-                <h2 class="txt-headline text-center fs-0">Информация о записи</h2>
-                <div class="mt-5 txt-content ">
-                    <h3 class="text-center txt-headline">Рекомендуем записаться заранее!</h3>
-                    <p>Часы работы: <span class="txt-headline txt-select">{{ inf.working_hours }}</span></p>
-                    <p>Время посещения — {{ inf.duration_of_the_visit }}
-                        {% if inf.duration_of_the_visit == 1 %}час{% else %}часа{% endif %},
-                        НО! если вы захотите остаться подольше, вы можете попросить у администратора продлить ваше время :)</p>
-                    <p><span class="txt-headline txt-select">Час</span>
-                        посещения стоит
-                        <span class="txt-headline txt-select">{{ inf.cost }}₽</span></p>
-                    <p>Напоминаем, что у нас  <span class="text-wavy">есть программа лояльности и разные скидки!</span></p>
-                </div>
-            </div>
-            <div class="px-5 w-50">
-                <h2 class="txt-headline text-center fs-0" id="contacts">Контакты</h2>
-                <div class="mt-5 txt-content">
-                    <p>Вы можете связаться с нами по нашему номеру телефона
-                        <span class="txt-headline txt-select">{{ inf.phone }}</span></p>
-                    <p>Администратор готов принять ваш звонок на <span class="text-wavy">протяжении всего нашего рабочего времени</span>,
-                    или же ответить вам на сообщение в любом удобном для вас мессенджере —
-                        <span class="txt-headline txt-select">telegram, whatsapp, viber, ВКонтакте</span></p>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mt-5">
-            <h2 class="txt-headline text-center fs-0">Как нас найти?</h2>
-            <p class="txt-content mt-5">Мы расположены по адресу: <span class="txt-headline txt-select">{{ inf.address.city }},
-                {{ inf.address.street }}, {{ inf.address.house_number }}</span></p>
-            <div class="d-flex justify-content-center mt-4">
-                <div id="map" class="map"></div>
-                <script type="text/javascript" src="https://api-maps.yandex.ru/2.1/?apikey=3df8f669-e58b-4de3-9940-465d0301c76c&lang=ru_RU"></script>
-            </div>
-        </div>
-    {% endfor %}
+	<div class="d-flex justify-content-around">
+		<div class="px-5 w-50">
+			<h2 class="txt-headline text-center fs-0">Информация о записи</h2>
+			<div class="mt-5 txt-content ">
+				<h3 class="text-center txt-headline">Рекомендуем записаться заранее!</h3>
+				<p>Часы работы: <span class="txt-headline txt-select" name="working_hours"></span></p>
+				<p>Время посещения — <span name="duration_of_the_visit"></span>
+					НО! если вы захотите остаться подольше, вы можете попросить у администратора продлить ваше время :)</p>
+				<p><span class="txt-headline txt-select">Час</span>
+					посещения стоит
+					<span class="txt-headline txt-select" name="cost"></span></p>
+				<p>Напоминаем, что у нас  <span class="text-wavy">есть программа лояльности и разные скидки!</span></p>
+			</div>
+		</div>
+		<div class="px-5 w-50">
+			<h2 class="txt-headline text-center fs-0" id="contacts">Контакты</h2>
+			<div class="mt-5 txt-content">
+				<p>Вы можете связаться с нами по нашему номеру телефона
+					<span class="txt-headline txt-select" name="phone"></span>
+                </p>
+				<p>Администратор готов принять ваш звонок на <span class="text-wavy">протяжении всего нашего рабочего времени</span>,
+				или же ответить вам на сообщение в любом удобном для вас мессенджере —
+					<span class="txt-headline txt-select">telegram, whatsapp, viber, ВКонтакте</span></p>
+			</div>
+		</div>
+	</div>
+	<div class="text-center mt-5">
+		<h2 class="txt-headline text-center fs-0">Как нас найти?</h2>
+		<p class="txt-content mt-5">Мы расположены по адресу: <span class="txt-headline txt-select" name="address"></span></p>
+		<div class="d-flex justify-content-center mt-4">
+			<div id="map" class="map"></div>
+			<script type="text/javascript" src="https://api-maps.yandex.ru/2.1/?apikey=3df8f669-e58b-4de3-9940-465d0301c76c&lang=ru_RU"></script>
+		</div>
+	</div>
 </div>
 
 {% block add_scripts %}
-    <script src="{% static "js/map_js.js" %}"></script>
+    <script src="{% static "js/Main/map.js" %}"></script>
 {% endblock %}
