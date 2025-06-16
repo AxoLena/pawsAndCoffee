@@ -1,6 +1,6 @@
 $(document).ready(function(){
     var successMessage = $("#jq-notification-success");
-    var showMsg = localStorage.getItem('succsessMsgText');
+    var showMsg = localStorage.getItem('successMsgText');
     var msg = localStorage.getItem('msg');
     if(msg === 'true'){
         successMessage.html(showMsg);

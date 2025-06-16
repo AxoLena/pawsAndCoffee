@@ -163,7 +163,7 @@ $(document).ready(function () {
 							},
 							error: function (response) {
 								alter('На сервере произошла ошибка!')
-								console.log('err - ', respons)
+								console.log('err - ', response)
 							},
 						})
 					}

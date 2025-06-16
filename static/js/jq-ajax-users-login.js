@@ -34,7 +34,7 @@ $(document).ready(function () {
         event.preventDefault();
         var fields = $('#user_forms_login').serializeArray();
         var formData = new FormData(this);
-        var succsessMsgText = `${fields[1].value}, с возвращением!`;
+        var successMsgText = `${fields[1].value}, с возвращением!`;
         $.ajax({
             data: formData,
             type: this.method,
@@ -59,7 +59,7 @@ $(document).ready(function () {
                         'auth-token': token,
                         'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value
                 });
-                localStorage.setItem('succsessMsgText', succsessMsgText);
+                localStorage.setItem('successMsgText', succsessMsgText);
                 localStorage.setItem('msg', 'true');
                 setTimeout(function () {
                     console.log("Redirecting");
@@ -103,7 +103,7 @@ $(document).ready(function () {
         var fields = $('#user_forms').serializeArray();
         var formData = new FormData(this);
         var currentUrl = $(location).attr('href');
-        var succsessMsgText = `${fields[1].value}, вы были успешно зарегистрированы`;
+        var successMsgText = `${fields[1].value}, вы были успешно зарегистрированы`;
         $.ajax({
             data: formData,
             type: 'POST',
@@ -112,7 +112,7 @@ $(document).ready(function () {
             processData: false,
             success: function(data){
                 console.log('ok');
-                successMessage.html(succsessMsgText);
+                successMessage.html(successMsgText);
                 successMessage.fadeIn(400);
                 setTimeout(function () {
                     successMessage.fadeOut(400);

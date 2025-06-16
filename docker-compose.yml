@@ -34,12 +34,13 @@ services:
       - db
     ports:
       - "8000:8000"
+      - "5678:5678"
     restart: always
     command:
       sh -c "python3 manage.py collectstatic --noinput &&
       python3 manage.py makemigrations &&
       python3 manage.py migrate &&
-      gunicorn pawsAndCoffee.wsgi:application --bind 0.0.0.0:8000 --timeout 1200 --workers 4 &&
+      python -m debugpy --listen 0.0.0.0:5678 -m gunicorn pawsAndCoffee.wsgi:application --bind 0.0.0.0:8000 --timeout 1200 --workers 4 &&
       stripe listen --forward-to localhost:8000/payment/webhook-stripe/"
 
   redis:

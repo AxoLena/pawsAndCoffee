@@ -3,16 +3,6 @@ $(document).ready(function () {
     var successMessage = $("#jq-notification-success");
     var dangerMessage = $("#jq-notification-danger");
 
-    $('#visits_inf').hide();
-    $('#visits').click(function(){
-        $('#visits_inf').toggle();
-    });
-
-    $('#guardianship_inf').hide()
-    $('#guardianship').click(function(){
-        $('#guardianship_inf').toggle();
-    });
-
     $('#id_logout').click(function(e) {
         e.preventDefault();
         var token = '';
@@ -77,12 +67,12 @@ $(document).ready(function () {
         var currentUrl = $(location).attr('href');
         var u = '';
         var method = '';
-        var succsessMsgText = '';
+        var successMsgText = '';
         var inputs = {};
         if (currentUrl.indexOf("change") != -1){
             if (!($("#ChangePassword").is(':hidden'))){
                 u = '../../api/auth/users/set_password/';
-                succsessMsgText = `Пароль был изменен`;
+                successMsgText = `Пароль был изменен`;
                 method = 'POST';
                 $('#user_forms :input[name]').each(function() {
                     if (jQuery.inArray(this.name, ['current_password', 'new_password', 're_new_password']) !== -1){
@@ -93,7 +83,7 @@ $(document).ready(function () {
             }
             else{
                 u = '../../api/auth/my/profile/';
-                succsessMsgText = `${fields[1].value}, данные профиля были измененны`;
+                successMsgText = `${fields[1].value}, данные профиля были изменены`;
                 method = 'PUT';
                 $('#user_forms :input[name]').each(function() {
                     if (jQuery.inArray(this.name, ['current_password', 'new_password', 're_new_password']) === -1){
@@ -113,7 +103,7 @@ $(document).ready(function () {
         processData: false,
         success: function(data){
             console.log('ok');
-            localStorage.setItem('succsessMsgText', succsessMsgText);
+            localStorage.setItem('successMsgText', successMsgText);
             localStorage.setItem('msg', 'true');
             $("#user_forms")[0].reset();
             setTimeout(function () {

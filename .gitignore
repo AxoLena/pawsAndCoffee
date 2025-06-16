@@ -9,7 +9,7 @@
 /static/js/jquery.js
 __init__.py
 /.idea/
-dockerignore
+.dockerignore
 requirements.txt
 .env
 .test.env

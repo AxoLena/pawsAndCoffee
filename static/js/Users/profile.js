@@ -1,4 +1,17 @@
 $(document).ready(function () {
+    
+    var successMessage = $("#jq-notification-success");
+    var dangerMessage = $("#jq-notification-danger");
+
+    $('#visits_inf').hide();
+    $('#visits').click(function(){
+        $('#visits_inf').toggle();
+    });
+
+    $('#guardianship_inf').hide()
+    $('#guardianship').click(function(){
+        $('#guardianship_inf').toggle();
+    });
 
     $('.tabs .tab').click(function(){
         if ($(this).hasClass('mainInf')) {

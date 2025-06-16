@@ -52,6 +52,35 @@ class UserRegSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    phone = serializers.CharField(validators=[phone_validate])
+    birthday = serializers.DateField(validators=[birthday_validate], required=False, default=None, allow_null=True)
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'phone', 'birthday']
+        
+    def validate(self, attrs):
+        user = self.context['request'].user
+        phone = attrs['phone']
+        if CustomUser.objects.filter(phone=phone) and not (user.phone == phone):
+            raise serializers.ValidationError({'phone': 'Пользователь с таким телефон уже существует'})
+        return attrs
+
+    def update(self, instance, validated_data):
+        is_changed = False
+        for key, value in validated_data.items():
+            if key[value] != instance.key:
+                instance.key = validated_data.data.get(f'{key}', instance.key)
+                is_changed = True
+        # instance.email = validated_data.get('email', instance.email)
+        # instance.username = validated_data.get('username', instance.username)
+        # instance.phone = validated_data.get('phone', instance.phone)
+        # instance.birthday = validated_data.get('birthday', instance.birthday)
+        if is_changed:
+            instance.save()
+        return instance
+
 
 class UserProfileSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(validators=[phone_validate])
@@ -64,16 +93,3 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['username', 'email', 'phone', 'birthday', 'coins', 'booking', 'guardianship', 'id']
 
-    def validate(self, attrs):
-        user = self.context['request'].user
-        if CustomUser.objects.filter(phone=attrs['phone']) and not (user.phone == attrs['phone']):
-            raise serializers.ValidationError({'phone': 'Пользователь с таким телефон уже существует'})
-        return attrs
-
-    def update(self, instance, validated_data):
-        instance.email = validated_data.get('email', instance.email)
-        instance.username = validated_data.get('username', instance.username)
-        instance.phone = validated_data.get('phone', instance.phone)
-        instance.birthday = validated_data.get('birthday', instance.birthday)
-        instance.save()
-        return instance

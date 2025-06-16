@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
+from django.views.generic import TemplateView
 from djoser.email import BaseDjoserEmail
 from django.test import Client
 from rest_framework import viewsets, views, status
@@ -12,7 +13,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from Users.forms import UserLoginForm, UserChangeProfileForm, UserRegForm, UserResetForm, UserSetPasswordForm
-from Users.serializers import UserProfileSerializer
+from Users.serializers import UserProfileSerializer, UserUpdateSerializer
 from Users.models import CustomUser
 from Booking.models import Booking
 from Cats.models import FormForGuardianship
@@ -47,7 +48,7 @@ class UserLoginRegView(View):
 
 class UserResetPasswordView(View):
     context = {
-        'title': 'Восстановаление пароля'
+        'title': 'Восстановление пароля'
     }
 
     def get(self, request):
@@ -92,30 +93,28 @@ class CustomPasswordResetEmail(BaseDjoserEmail):
         return context
 
 
-class UserProfileView(LoginRequiredMixin, GetCacheMixin, GetAuthTokenMixin, View):
-    context = {
-        'title': 'Личный кабинет'
-    }
+class UserProfileTemplateView(LoginRequiredMixin, TemplateView):
+    template_name = 'users/profile.html'
+    
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        context['title'] = 'Личный кабинет'
+        return context
 
-    def get(self, request, *args, **kwargs):
-        user_pk = request.user.pk
+# class UserProfileView(LoginRequiredMixin, GetCacheMixin, GetAuthTokenMixin, View):
+#     context = {
+#         'title': 'Личный кабинет'
+#     }
 
-        # user = self.get_cache_for_context(cache_name=f'user_profile_cache_{user_pk}',
-        #                                   url=reverse('users:account'), time=1, request=request)
-        # coupons = self.get_cache_for_context(cache_name=settings.COUPONS_CACHE_NAME,
-        #                                      url=(reverse('bonuses:coupon-list')), time=60 * 60)
-        # self.context['user'] = user
-        # self.context['coupons'] = coupons
-        return render(request, 'users/profile.html', context=self.context)
+#     def get(self, request, *args, **kwargs):
+#         user_pk = request.user.pk
+#         return render(request, 'users/profile.html')
 
 
 class UserChangeProfileView(LoginRequiredMixin, View):
     context = {
         'title': 'Изменить профиль'
     }
-
-    def is_ajax(self):
-        return self.request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
     def get(self, request):
         user = request.user
@@ -166,7 +165,7 @@ class UserAccountAPIView(views.APIView):
         return Response(UserProfileSerializer(data).data)
 
     def put(self, request):
-        serializer = UserProfileSerializer(data=request)
+        serializer = UserUpdateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(status=status.HTTP_200_OK)

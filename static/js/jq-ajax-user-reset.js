@@ -11,16 +11,16 @@ $(document).ready(function () {
         $('#user_forms_reset :input[name]').each(function() {
             $data[this.name] = $(this).val();
         });
-        var succsessMsgText = '';
+        var successMsgText = '';
         var u = '';
         var currentUrl = $(location).attr('href');
         if (currentUrl.indexOf("email") != -1){
             u = '../../api/auth/users/reset_password/';
-            succsessMsgText = 'Письмо было отправлено на почту';
+            successMsgText = 'Письмо было отправлено на почту';
         }
         if (currentUrl.indexOf("password") != -1){
             u = '../../../../../api/auth/users/reset_password_confirm/';
-            succsessMsgText = 'Пароль изменен';
+            successMsgText = 'Пароль изменен';
             var form = $(this);
             var formUrl=form.attr('action');
             $data["uid"] = formUrl.split('/')[5];
@@ -47,7 +47,7 @@ $(document).ready(function () {
                     }
                 });
                 if (currentUrl.indexOf("password") != -1){
-                    localStorage.setItem('succsessMsgText', succsessMsgText);
+                    localStorage.setItem('successMsgText', successMsgText);
                     localStorage.setItem('msg', 'true');
                     setTimeout(function () {
                         console.log("Redirecting");
@@ -55,7 +55,7 @@ $(document).ready(function () {
                     }, 50);
                 }
                 else{
-                    successMessage.html(succsessMsgText);
+                    successMessage.html(successMsgText);
                     successMessage.fadeIn(400);
                     setTimeout(function () {
                         successMessage.fadeOut(400);
